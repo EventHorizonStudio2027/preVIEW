@@ -1,22 +1,32 @@
 name: preVIEW CI
 on:
   push:
+    branches: [main, develop]
   pull_request:
 permissions:
   contents: read
 jobs:
-  tests:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run tests when project is present
+      - name: Unit tests
+        run: npm test
+  source-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify complete application was synchronized
         shell: bash
         run: |
-          if [ -f package.json ]; then
-            npm test
-          else
-            echo "Source import pending: no package.json yet"
-          fi
+          set -euo pipefail
+          for path in index.html src/app.js src/model.js src/sdk.js src/styles.css examples/checkpoint-demo.html assets/brand/mark.svg; do
+            if [ ! -s "$path" ]; then
+              echo "::error file=$path::Missing application source or brand asset: $path"
+              exit 1
+            fi
+          done
+          echo "Application source integrity passed."
