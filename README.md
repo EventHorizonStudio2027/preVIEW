@@ -2,27 +2,23 @@
 
 **Don't just watch it. Play it.**
 
-preVIEW is a creator platform for turning compatible browser games and applications into short, interactive previews.
+preVIEW is a creator platform for interactive, playable previews of browser games and applications.
 
-## Product direction
-- Creator dashboard and project management
-- HTML5 game import and sandboxed playback
-- Gameplay moments, checkpoint SDK, timeline, and guided playback
-- Event-based moment suggestions
-- Eventually: AI Director, analytics, and hosted publishing
+## Branding
+Default theme: **light mode**, with white and soft-lavender surfaces and violet accents. Brand name casing is always **preVIEW**.
 
-## Development status
-The existing local v0.8 prototype has not yet been imported into this repository. This initial commit establishes the canonical GitHub home and development conventions. **Do not treat this repository as a deployable app yet.**
+## Repository status
+This is a **public** repository by the owner's explicit choice. The `develop` branch currently has an initial import-diagnostics module, unit tests, a browser test fixture, and CI. The **full v1.3 editor, checkpoint SDK, and branding assets are not yet committed here**. Until [issue #1](https://github.com/FatesPassage/preVIEW/issues/1) is resolved, the repository is **not** a runnable full product.
 
-## Development conventions
-- Keep `main` stable; develop changes in feature branches.
-- Run automated tests before merging.
-- Never commit credentials, API keys, or untrusted uploaded game bundles.
-- Distinguish implemented, tested, and browser-verified features.
-- Keep the exact product name **preVIEW**.
+## Development
+- `npm test` runs the unit tests currently committed.
+- `main` is the stable branch; `develop` is for integration work.
+- CI checks both unit tests and required application files. A failed source-integrity check means the repository is incomplete, **not** that the local prototype failed its tests.
+- Browser testing is tracked in [issue #2](https://github.com/FatesPassage/preVIEW/issues/2).
 
-## Next steps
-1. Import the complete v0.8 source tree.
-2. Run Node tests and browser smoke tests in CI.
-3. Implement and verify complete game-bundle imports.
-4. Harden game sandbox isolation and checkpoint messaging.
+## Security
+Never commit credentials, API keys, private information, or uploaded third-party games. Treat game HTML and checkpoint payloads as untrusted content.
+
+## Open blockers
+- [#1 — Complete application source and brand assets](https://github.com/FatesPassage/preVIEW/issues/1)
+- [#2 — Deterministic Chromium browser smoke test](https://github.com/FatesPassage/preVIEW/issues/2)
