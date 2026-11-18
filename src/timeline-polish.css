@@ -1,0 +1,9 @@
+/* preVIEW light-mode polish: compact, scannable timeline rows. */
+.moment-list{display:grid;gap:8px}
+.moment{transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+.moment:hover{border-color:#A994FF;box-shadow:0 5px 18px rgba(43,46,58,.08);transform:translateY(-1px)}
+.moment:focus-within{border-color:#7958E8;box-shadow:0 0 0 3px rgba(121,88,232,.12)}
+.moment[draggable="true"]{cursor:grab}
+.moment[draggable="true"]:active{cursor:grabbing}
+.moment button:focus-visible,.moment select:focus-visible{outline:2px solid #7958E8;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.moment{transition:none}.moment:hover{transform:none}}
