@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {exportReadiness} from '../src/export-readiness.js';
+const base={fileName:'game.html',duration:30,ctaUrl:'https://example.com',moments:[{durationSeconds:8,checkpoint:{hp:1}}]};
+test('ready export has no warnings',()=>assert.deepEqual(exportReadiness(base),{ready:true,issues:[],totalSeconds:8}));
+test('empty project lists actionable issues',()=>{const r=exportReadiness({moments:[],duration:30});assert.equal(r.ready,false);assert.equal(r.issues.length,3)});
+test('over-budget timeline is detected',()=>assert.match(exportReadiness({...base,duration:3}).issues.join(' '),/exceeds target by 5 seconds/));
+test('missing checkpoints are reported',()=>assert.match(exportReadiness({...base,moments:[{durationSeconds:8,checkpoint:null}]}).issues.join(' '),/lack checkpoints/));
+test('unsafe CTA URL is rejected',()=>assert.match(exportReadiness({...base,ctaUrl:'javascript:alert(1)'}).issues.join(' '),/HTTP or HTTPS/));
+test('malformed project does not throw',()=>assert.equal(exportReadiness(null).ready,false));
