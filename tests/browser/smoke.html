@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>preVIEW browser smoke</title><div id="result">RUNNING</div><script type="module">
+import {createMoment,playbackPlan,normalizeBackup} from '../../src/model.js';
+try {
+ const m=createMoment('Boss','wow',2);m.checkpoint={hp:1};
+ const plan=playbackPlan({moments:[m]},8);
+ if(plan[0].durationSeconds!==8)throw Error('playback schedule');
+ const p=normalizeBackup({format:'preview-project',version:2,project:{name:'Demo',fileName:'demo.html',moments:[m],duration:60,ctaText:'Play',ctaUrl:''}});
+ if(p.moments.length!==1)throw Error('backup normalization');
+ document.querySelector('#result').textContent='PASS';
+}catch(e){document.querySelector('#result').textContent='FAIL: '+e.message}
+</script>
