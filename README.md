@@ -189,3 +189,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Export blockers and optional setup notices appear separately in the review panel.
 - Missing source, invalid CTA, empty moments and overlong timeline remain export blockers.
 - Added six focused regression tests. Live publication of exported playable builds is not implemented.
+
+## v3.2 — Standalone playable HTML export
+- Review & Export now downloads a single HTML file embedding the imported game's HTML source as base64 and rendering it inside a sandboxed iframe.
+- CTA is displayed as an external link with rel=noopener noreferrer; titles and labels are escaped.
+- Export works without marked moments or optional SDK checkpoints. JSON manifest and project backup remain available.
+- This is a portable file, **not an automatically hosted URL**. Games with relative assets or remote dependencies may not function offline; import only trusted games.
+- Seven regression tests cover shell, isolation, escaping, validation and naming.
