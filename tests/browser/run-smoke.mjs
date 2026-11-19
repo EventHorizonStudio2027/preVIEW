@@ -39,6 +39,18 @@ try {
   await page.goto(origin + '/index.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await page.getByRole('heading', { name: 'Build previews worth playing.' }).waitFor();
   await page.locator('[data-step="import"]').waitFor();
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-step="import"]').waitFor();
+  // A remembered filename cannot count as an active playable source after reload.
+  await page.evaluate(() => localStorage.setItem('preview-project-v2', JSON.stringify({
+    name:'Recovered', fileName:'previous.html', moments:[], duration:60,
+    ctaText:'Play', ctaUrl:''
+  })));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-step="import"]:not(.completed)').waitFor();
+  const importLabel = await page.locator('[data-step="import"]').getAttribute('aria-label');
+  if (!importLabel?.includes('Reimport')) throw new Error('Missing game source did not prompt reimport');
+
   if (await page.locator('[data-step="import"]').getAttribute('class') === 'completed') throw new Error('Fresh project should not mark import completed');
   await page.getByRole('link', { name: /Preview editor/ }).click();
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
