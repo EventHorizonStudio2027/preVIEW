@@ -7,6 +7,6 @@ export async function bundleAssets(source,files){
  const map=new Map();for(const file of files){const path=safePath(file.webkitRelativePath||file.name);if(path)map.set(path,file)}
  const replacements=new Map();let bytes=0;const missing=[];
  for(const path of paths){const file=map.get(path)||map.get([...map.keys()].find(k=>k.endsWith('/'+path)));if(!file){missing.push(path);continue}bytes+=file.size;if(bytes>LIMIT)throw Error('Selected assets exceed the 30 MB bundle limit.');const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);let raw='';for(let i=0;i<arr.length;i+=8192)raw+=String.fromCharCode(...arr.subarray(i,i+8192));const type=file.type||'application/octet-stream';replacements.set(path,'data:'+type+';base64,'+btoa(raw))}
- let html=source;for(const [path,data] of replacements){const escaped=path.replace(/[.*+?^$()|[\]{}\\]/g,'\\$&');const re=new RegExp('(?<=["\\x27(])(?:\\./)?'+escaped+'(?=["\\x27)?])','g');html=html.replace(re,data)}
+ let html=source;for(const [path,data] of replacements){for(const prefix of ['', './']){const target=prefix+path;for(const q of ['"', "'", '(', ' '])html=html.replaceAll(q+target+q,q+data+q)}}
  return {html,matched:replacements.size,missing,bytes};
 }
