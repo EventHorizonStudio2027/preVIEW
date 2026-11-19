@@ -18,13 +18,16 @@ const server = createServer(async (req, res) => {
 });
 
 let browser;
+let page;
 try {
   await new Promise((ok, bad) => { server.once('error', bad); server.listen(0, '127.0.0.1', ok); });
   const { chromium } = await import('playwright');
   browser = await chromium.launch({ headless: true, timeout: 20000 });
-  const page = await browser.newPage();
+  page = await browser.newPage();
   page.setDefaultTimeout(10000);
   const errors = [];
+  const failedResponses = [];
+  page.on('response', response => { if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`); });
   page.on('pageerror', e => errors.push(e.message));
   const origin = `http://127.0.0.1:${server.address().port}`;
 
@@ -37,14 +40,21 @@ try {
   await page.getByRole('heading', { name: 'Build previews worth playing.' }).waitFor();
   await page.getByRole('link', { name: /Preview editor/ }).click();
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
-  await page.getByRole('button', { name: 'Load playable demo' }).click();
+  await page.locator('#loadDemo').click();
   await page.waitForFunction(() => document.querySelector('#gameFrame')?.getAttribute('src') === 'examples/checkpoint-demo.html');
   await page.locator('#gameFrame').contentFrame().locator('body').waitFor();
-  await page.getByText('Demo loaded', { exact: true }).first().waitFor();
+  await page.locator('#sessionStatus').getByText('Demo loaded', { exact: true }).waitFor();
+  if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (model fixture, editor navigation, demo loading)');
 } catch (e) {
   console.error('Browser smoke: FAIL:', e.message);
+  if (page) {
+    try {
+      await page.screenshot({ path: 'browser-smoke-failure.png', fullPage: true, timeout: 5000 });
+      console.error('Saved browser-smoke-failure.png');
+    } catch (captureError) { console.error('Screenshot unavailable:', captureError.message); }
+  }
   process.exitCode = 1;
 } finally {
   await browser?.close();
