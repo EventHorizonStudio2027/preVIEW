@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {safeExportName,canMarkMoment,projectHealth} from '../src/workspace-tools.js';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');const js=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+test('exports use safe readable project filenames',()=>assert.equal(safeExportName('My Cool Game!'),'preview-my-cool-game-backup.json'));
+test('path separators never enter exported filename',()=>assert.equal(safeExportName('../foo\\bar','manifest'),'preview-foo-bar-manifest.json'));
+test('unsupported export kind rejected',()=>assert.throws(()=>safeExportName('x','html')));
+test('session at zero is valid, stopped session invalid',()=>{assert.equal(canMarkMoment(0),true);assert.equal(canMarkMoment(null),false)});
+test('workspace status guides first-time creator',()=>assert.match(projectHealth({fileName:''}).label,/Import/));
+test('workspace status tracks missing checkpoints',()=>assert.equal(projectHealth({fileName:'x',moments:[{checkpoint:null}]}).level,'attention'));
+test('workspace status confirms complete checkpoint setup',()=>assert.equal(projectHealth({fileName:'x',moments:[{checkpoint:{hp:1}}]}).level,'ready'));
+test('editor exposes undo action and status to assistive tech',()=>{assert.match(html,/id="undoDelete"/);assert.match(html,/id="editorHealth"[^>]*role="status"/);assert.match(js,/deletedMoment=\{moment:m,index:i\}/)});
+test('keyboard shortcut exports backup',()=>assert.match(js,/e\.metaKey\|\|e\.ctrlKey/));
