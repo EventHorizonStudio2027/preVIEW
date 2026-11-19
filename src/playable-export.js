@@ -1,10 +1,12 @@
 /** Build a portable, single-file playable preview. No hosting is implied. */
 import {validateDestination} from './model.js';
+import {inspectHtml} from './import-check.js';
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function base64(text){const bytes=new TextEncoder().encode(text);let result='';for(let i=0;i<bytes.length;i+=8192)result+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(result)}
 export function buildPlayableHtml(project,sourceHtml){
  if(typeof sourceHtml!=='string'||!sourceHtml.trim())throw Error('Import a game HTML file before exporting a playable preview.');
- if(new TextEncoder().encode(sourceHtml).length>20*1024*1024)throw Error('Game HTML exceeds the 20 MB export limit.');
+ const inspection=inspectHtml(sourceHtml,'game.html');
+ if(inspection.counts.unsafe)throw Error('Cannot export a game with unsafe asset references.');
  const destination=validateDestination(project?.ctaUrl||'');if(!destination)throw Error('Enter a valid HTTP or HTTPS destination.');
  const name=escapeHtml((project?.name||'Untitled preview').slice(0,80));
  const label=escapeHtml((project?.ctaText||'Play the full game').slice(0,70));
