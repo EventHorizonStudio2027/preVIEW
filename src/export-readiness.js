@@ -2,6 +2,7 @@
 import {validateDestination} from './model.js';
 export function exportReadiness(project, sourceLoaded = true) {
   const issues=[];
+  const warnings=[];
   if (!project || !Array.isArray(project.moments)) return {ready:false,issues:['Project data is invalid.']};
   if (!project.fileName) issues.push('Import a game before exporting.');
   else if (!sourceLoaded) issues.push('Reimport the game HTML before exporting.');
@@ -10,6 +11,6 @@ export function exportReadiness(project, sourceLoaded = true) {
   if (Number.isFinite(project.duration) && total>project.duration) issues.push('Timeline exceeds target by '+(total-project.duration)+' seconds.');
   if (!project.ctaUrl || validateDestination(project.ctaUrl)===null || validateDestination(project.ctaUrl)==='') issues.push('Set a valid HTTP or HTTPS call-to-action URL.');
   const missing=project.moments.filter(m=>m.checkpoint==null).length;
-  if (missing) issues.push(missing+' moment'+(missing===1?'':'s')+' lack checkpoints for guided playback.');
-  return {ready:issues.length===0,issues,totalSeconds:total};
+  if (missing) warnings.push(missing+' moment'+(missing===1?'':'s')+' lack checkpoints; guided playback requires them, but a planning manifest does not.');
+  return {ready:issues.length===0,issues,warnings,totalSeconds:total};
 }
