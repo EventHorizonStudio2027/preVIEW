@@ -161,3 +161,10 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Review cannot be marked complete with a missing game source.
 - The project overview marks a missing source as **Reimport to play** instead of implying the game is loaded.
 - New regression tests cover source availability; **105/105 local Node tests passed**. CI for the latest develop commit still requires confirmation.
+
+## v2.7 — Export readiness safeguards
+- Export is blocked when the game source has been lost after reload or backup restore, or when other readiness checks fail.
+- Export view is explicitly **Review & export**; no deployment or publishing is implied.
+- Readiness checklist has clearer visual grouping and spacing.
+- Six new regression tests; local Node suite **111/111 passing**.
+- Exported artifact is a planning manifest, **not** a playable, hosted build.
