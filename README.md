@@ -116,3 +116,6 @@ Added a visible-on-focus skip navigation link, programmatic main focus target, k
 - Local-only project cards now explicitly display **Local draft**; they are not hosted or published.
 - Browser integration uses `npm run test:browser` (Playwright; install with `npm install` then `npx playwright install chromium`). This environment's system Chromium previously hung. Passing Node tests does not establish browser correctness.
 - GitHub's `develop` branch may be missing source files until source-integrity CI passes; do not merge into `main` while blocked.
+
+## v2.0 first-run UX
+The empty player now offers a prominent **Try the playable demo** action. The browser smoke test remains blocked by this execution environment (local HTTP requests receive ERR_BLOCKED_BY_ADMINISTRATOR); do not claim browser verification passed.
