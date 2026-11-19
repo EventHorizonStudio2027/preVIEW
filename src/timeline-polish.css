@@ -50,3 +50,8 @@
 /* v2.3 — clear publication state, no false "live" signal */
 .draft-label{display:inline-flex;align-items:center;gap:6px;border:1px solid #e9e1ff;background:#f7f5ff;color:#58468a;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700;white-space:nowrap}
 @media(max-width:560px){.draft-label{padding:5px 7px;font-size:10px}}
+
+/* v2.4: import diagnostics communicate scan results without noisy alerts */
+#importDiagnostics{border-radius:9px;padding:10px 12px;margin:12px 0;background:#f7f5ff;border:1px solid #e9e1ff;line-height:1.5}
+#importDiagnostics[data-level="ready"]{background:#f1faf6;border-color:#bce5d0;color:#276247}
+#importDiagnostics[data-level="caution"]{background:#fffaf0;border-color:#f3dca7;color:#805a1c}
