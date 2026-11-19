@@ -196,3 +196,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Export works without marked moments or optional SDK checkpoints. JSON manifest and project backup remain available.
 - This is a portable file, **not an automatically hosted URL**. Games with relative assets or remote dependencies may not function offline; import only trusted games.
 - Seven regression tests cover shell, isolation, escaping, validation and naming.
+
+## v3.3 — Playable export verification and security
+- Re-check unsafe asset references at export time, not just import.
+- Chromium browser smoke now actually opens and clicks a button inside generated standalone HTML and checks Unicode/CTA fidelity.
+- Add three unit regressions for unsafe references, Unicode encoding, and size limits.
+- Review UI clarifies single-file deliverable, self-hosting and missing asset bundling. Hosted links remain a future feature.
