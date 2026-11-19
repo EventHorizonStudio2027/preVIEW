@@ -119,14 +119,13 @@ Added a visible-on-focus skip navigation link, programmatic main focus target, k
 
 ## v2.0 first-run UX
 The empty player now offers a prominent **Try the playable demo** action. The browser smoke test remains blocked by this execution environment (local HTTP requests receive ERR_BLOCKED_BY_ADMINISTRATOR); do not claim browser verification passed.
-## v2.1 workspace development
-Local v2.1 adds reversible moment removal, contextual editor health, safe project-based JSON filenames, Cmd/Ctrl+S backup, and explicit session-state validation. Local Node suite: 68/68 passing. The GitHub branch includes the new helper, tests, markup, and CSS, **but not yet the modified application controller** (`src/app.js`) or base stylesheet (`src/styles.css`); the new controls are not functional from this branch until the remaining source is synchronized. Browser smoke remains unverified. See issues #1 and #2.
 
-## v2.2 editor usability and reliability (local development)
-- Advanced Guided Walkthrough, Timed Sequence, and Game Events tools now use accessible collapsed disclosure panels.
-- Pending Undo state is cleared when a game is unloaded or replaced; prevents cross-project restoration.
-- Export readiness says "planning manifest" instead of implying a playable published artifact.
-- Undo has an explicit accessible label and disclosure panels have visible keyboard focus.
-- Local automated suite: **75/75 passing**, syntax checks pass, 40-file ZIP integrity verified.
-- Browser test remains **blocked**: Chromium launches, but this runtime rejects both loopback and virtual HTTPS navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`.
-- GitHub **does not yet have** `src/app.js`, `src/styles.css`, and raster brand assets. v2.2 UI markup, stylesheet additions, and tests have been pushed; GitHub CI is not expected to pass until full synchronization.
+## v2.2 UX and reliability
+Advanced walkthrough, timed playback, and telemetry tools are collapsed by default to reduce editor clutter. Removing a game, resetting the workspace, or loading another game clears any pending Undo action, preventing moments from being restored into the wrong project. Export readiness now explicitly says it refers to a planning manifest, not a published playable build. Local automated tests cover these behaviors. Browser integration still needs verification.
+
+## v2.3 — validation and publication clarity
+- Uses shared model URL validation in export readiness to reject malformed HTTP(S) URLs.
+- Import inspection errors now show a user-facing message and reset the file chooser.
+- Workspace header explicitly displays **Not published**; a planning manifest is not a deployed playable preview.
+- Includes six additional regression tests.
+- GitHub source sync and browser smoke remain release blockers; no hosted deployment is claimed.
