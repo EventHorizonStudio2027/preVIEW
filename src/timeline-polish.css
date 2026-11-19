@@ -55,3 +55,12 @@
 #importDiagnostics{border-radius:9px;padding:10px 12px;margin:12px 0;background:#f7f5ff;border:1px solid #e9e1ff;line-height:1.5}
 #importDiagnostics[data-level="ready"]{background:#f1faf6;border-color:#bce5d0;color:#276247}
 #importDiagnostics[data-level="caution"]{background:#fffaf0;border-color:#f3dca7;color:#805a1c}
+
+/* v2.5: compact, actionable three-stage creator journey */
+.creator-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 24px}
+.creator-steps button{display:flex;align-items:center;gap:11px;text-align:left;background:#fff;border:1px solid #e9e1ff;border-radius:12px;padding:13px 15px;color:#2b2e3a;cursor:pointer;min-width:0}
+.creator-steps button:hover,.creator-steps button:focus-visible{border-color:#7958e8;box-shadow:0 0 0 2px #e9e1ff;outline:none}
+.creator-steps .step-num{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:#f7f5ff;color:#7958e8;font-weight:800}
+.creator-steps button.completed .step-num{background:#e9f8ee;color:#26744a}
+.creator-steps strong,.creator-steps small{display:block}.creator-steps small{font-size:11px;color:#777783;margin-top:3px}
+@media(max-width:650px){.creator-steps{gap:5px}.creator-steps button{padding:9px 6px;gap:5px}.creator-steps .step-num{width:22px;height:22px;font-size:11px}.creator-steps strong{font-size:11px}.creator-steps small{display:none}}
