@@ -13,3 +13,8 @@
 .timeline-meter>span{display:block;height:100%;width:0;background:#7958E8;border-radius:inherit;transition:width .18s ease}
 .timeline-meter.over-budget>span{background:#D56C55}
 @media(prefers-reduced-motion:reduce){.timeline-meter>span{transition:none}}
+
+/* v1.8 project-status refinement */
+.project-status{display:inline-flex;align-items:center;gap:7px;background:#F7F5FF;color:#59477D;border:1px solid #E9E1FF;font-weight:650}
+.project-status .status-indicator{height:7px;width:7px;border-radius:50%;background:#7958E8;box-shadow:0 0 0 3px #7958E81C}
+@media(max-width:440px){.project-status{font-size:10px;padding:5px 8px}}
