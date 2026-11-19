@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const workflow=readFileSync(new URL('../.github/workflows/pages.yml',import.meta.url),'utf8');
+test('export button reflects readiness',()=>assert.match(app,/\$\('exportManifest'\)\.disabled=!check\.ready/));
+test('overview does not promise a shareable preview',()=>assert.doesNotMatch(page,/shareable preview blueprint/));
+test('Pages validates index before deployment',()=>assert.match(workflow,/test -s index.html/));
+test('Pages validates game demo before deployment',()=>assert.match(workflow,/test -s examples\/checkpoint-demo.html/));
