@@ -168,3 +168,9 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Readiness checklist has clearer visual grouping and spacing.
 - Six new regression tests; local Node suite **111/111 passing**.
 - Exported artifact is a planning manifest, **not** a playable, hosted build.
+
+## GitHub Pages deployment preparation
+- Added `.github/workflows/pages.yml` to deploy the stable `main` branch to GitHub Pages, once the workflow reaches `main` and Pages is configured to use GitHub Actions.
+- Expected public URL after successful deployment: https://fatespassage.github.io/preVIEW/ (not confirmed live yet).
+- Do not treat the GitHub Pages URL as working until the Pages deployment job succeeds. `develop` remains the development branch.
+- Export action now visually disables when the readiness checklist fails; its existing click-time validation remains as a second guard.
