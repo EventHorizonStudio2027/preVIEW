@@ -207,3 +207,8 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Review & Export now shows the imported game's source size and counts of local, remote and unsafe asset references.
 - Unsafe references disable playable export before download; local and remote dependencies remain visible as caveats.
 - Seven unit tests cover source diagnostics and interface behavior. Asset bundling and hosted links remain outstanding.
+
+## v3.5 — Local asset bundling (initial support)
+- Review & Export accepts additional local files and embeds matched HTML/CSS asset references as data URLs into the standalone playable HTML.
+- Selected asset counts are visible, unmatched assets are reported, and six unit tests cover bundling.
+- Limits: up to 30 MB selected matched assets; relative imports inside JavaScript modules, dynamic fetch paths and nested CSS dependencies are not yet rewritten. No hosted publishing yet.
