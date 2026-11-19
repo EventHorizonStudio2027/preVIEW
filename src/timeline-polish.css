@@ -35,3 +35,15 @@
 .editor-health[data-level="ready"]{color:#236852;background:#eaf7f1;border-color:#c9e9da}
 .editor-health[data-level="attention"]{color:#8c4d1d;background:#fff5e7;border-color:#f3dfc5}
 #undoDelete{font-size:12px;min-height:32px}
+
+/* v2.2: progressive disclosure for advanced creator controls */
+.advanced-tool{margin:12px 0;border:1px solid #e9e1ff;border-radius:14px;background:#fff;overflow:hidden}
+.advanced-tool>summary{cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;list-style:none;color:#2b2e3a}
+.advanced-tool>summary::-webkit-details-marker{display:none}
+.advanced-tool>summary::after{content:'+';font-size:21px;font-weight:400;color:#7958e8;margin-left:auto}
+.advanced-tool[open]>summary::after{content:'−'}
+.advanced-tool>summary span{font-size:12px;color:#6d687d;font-weight:400}
+.advanced-tool[open]>summary{border-bottom:1px solid #e9e1ff;background:#f7f5ff}
+.advanced-tool .walkthrough{margin:0;border:0;border-radius:0}
+.advanced-tool>summary:focus-visible{outline:3px solid #7958e8;outline-offset:-3px}
+@media(max-width:560px){.advanced-tool>summary span{display:none}}
