@@ -3,6 +3,10 @@ const MAX_HTML_BYTES = 20 * 1024 * 1024;
 const MAX_REPORT = 100;
 function classify(raw) {
   const path = raw.trim();
+  let decoded;
+  try { decoded = decodeURIComponent(path); } catch { return {kind:'unsafe',path}; }
+  if (/[\\\x00-\x1f]/.test(decoded) || /^(?:javascript:|file:|vbscript:|about:)/i.test(decoded)) return {kind:'unsafe',path};
+  if (decoded.split(/[?#]/)[0].split('/').some(segment=>segment==='..')) return {kind:'unsafe',path};
   if (!path || path.startsWith('#') || /^(?:data:|blob:)/i.test(path)) return null;
   if (/^(?:javascript:|file:|vbscript:|about:)/i.test(path)) return {kind:'unsafe',path};
   if (/^(?:https?:)?\/\//i.test(path)) return {kind:'remote',path};
@@ -36,6 +40,7 @@ export function inspectHtml(source, filename='game.html') {
   const sdkDetected=/\bpreVIEW\s*\.\s*register\s*\(/.test(source);
   return {
     compatible:counts.unsafe===0 && counts.local===0,
+    canImport:counts.unsafe===0,
     sdkDetected,
     references:references.slice(0,MAX_REPORT),
     totalReferences:references.length,
