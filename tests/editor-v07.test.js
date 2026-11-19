@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeBackup,reorderMoment,sequenceSummary} from '../src/model.js';
+const moment=(id,durationSeconds=8)=>({id,title:'Boss',type:'wow',atSeconds:3,notes:'',checkpoint:null,durationSeconds});
+const project=()=>({name:'Test',fileName:'demo.html',moments:[moment('a'),moment('b',12)],duration:30,ctaText:'Play',ctaUrl:'https://example.com'});
+const backup=p=>({format:'preview-project',version:2,project:p});
+test('normalizes valid backup without unknown fields',()=>{const p=project();p.untrusted=true;assert.equal(normalizeBackup(backup(p)).untrusted,undefined)});
+test('rejects invalid backup destination and duplicate IDs',()=>{const p=project();p.ctaUrl='javascript:alert(1)';assert.throws(()=>normalizeBackup(backup(p)));p.ctaUrl='https://example.com';p.moments[1].id='a';assert.throws(()=>normalizeBackup(backup(p)))});
+test('rejects malformed text and oversized project metadata',()=>{const p=project();p.moments[0].notes={};assert.throws(()=>normalizeBackup(backup(p)));p.moments[0].notes='';p.name='x'.repeat(81);assert.throws(()=>normalizeBackup(backup(p)))});
+test('sequence summary tracks budget accurately',()=>{const p=project();assert.deepEqual(sequenceSummary(p),{totalSeconds:20,targetSeconds:30,overBudget:false,remainingSeconds:10});p.duration=15;assert.equal(sequenceSummary(p).overBudget,true)});
+test('drag reorder is immutable and ignores invalid IDs',()=>{const a=[moment('a'),moment('b'),moment('c')];assert.deepEqual(reorderMoment(a,'a','c').map(m=>m.id),['b','c','a']);assert.equal(a[0].id,'a');assert.deepEqual(reorderMoment(a,'x','c'),a)});
