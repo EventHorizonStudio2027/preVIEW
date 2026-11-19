@@ -1,0 +1,59 @@
+export const TYPES=['hook','mechanic','wow','progression','finale'];
+export function validateDestination(url){if(!url.trim())return '';try{const u=new URL(url);return ['https:','http:'].includes(u.protocol)?u.href:null}catch{return null}}
+export function createMoment(title,type,seconds){if(!title.trim())throw Error('Enter a moment title.');if(!TYPES.includes(type))throw Error('Invalid moment type.');if(!Number.isFinite(seconds)||seconds<0)throw Error('Invalid timestamp.');return {id:crypto.randomUUID(),title:title.trim().slice(0,100),type,atSeconds:Math.round(seconds*10)/10,notes:'',checkpoint:null,durationSeconds:8}}
+export function moveMoment(items,id,delta){const i=items.findIndex(m=>m.id===id),j=i+delta;if(i<0||j<0||j>=items.length)return [...items];const out=[...items];[out[i],out[j]]=[out[j],out[i]];return out}
+export function validateProject(project){if(!project||typeof project!=='object'||!Array.isArray(project.moments))throw Error('Invalid project data.');if(project.moments.length>200)throw Error('Too many moments.');for(const m of project.moments){if((m.durationSeconds!==undefined&&(!Number.isInteger(m.durationSeconds)||m.durationSeconds<3||m.durationSeconds>30))||typeof m.title!=='string'||!TYPES.includes(m.type)||!Number.isFinite(m.atSeconds)||m.atSeconds<0||(m.checkpoint!==undefined&&m.checkpoint!==null&&JSON.stringify(m.checkpoint).length>250000))throw Error('Invalid moment data.')}return true}
+export function manifest(state){validateProject(state);const url=validateDestination(state.ctaUrl||'');if(url===null)throw Error('CTA destination must be an HTTP or HTTPS URL.');return {schemaVersion:2,product:'preVIEW',project:{name:state.name||'Untitled project',sourceFileName:state.fileName||null},moments:state.moments.map((m,i)=>({order:i+1,title:m.title,type:m.type,atSeconds:m.atSeconds,notes:m.notes||'',durationSeconds:m.durationSeconds??8,checkpoint:m.checkpoint??null})),cta:{text:(state.ctaText||'Play the full game').trim(),url},generatedAt:new Date().toISOString(),capabilities:{recordedVideo:false,restorableCheckpoints:state.moments.some(m=>m.checkpoint!==null&&m.checkpoint!==undefined),aiDirector:false},note:'Planning manifest only. Uploaded game binaries are not included.'}}
+
+/** A guided walkthrough requires an SDK checkpoint for every step. */
+export function walkthroughReadiness(project){
+  validateProject(project);
+  const missing=project.moments.map((m,i)=>m.checkpoint===null||m.checkpoint===undefined?i+1:null).filter(Boolean);
+  return {ready:project.moments.length>0&&missing.length===0,total:project.moments.length,missing};
+}
+export function walkthroughStep(project,index){
+  const status=walkthroughReadiness(project);
+  if(!status.ready)throw Error(status.total===0?'Add moments first.':`Save checkpoints for moments: ${status.missing.join(', ')}`);
+  if(!Number.isInteger(index)||index<0||index>=status.total)throw Error('Invalid walkthrough step.');
+  const m=project.moments[index];return {index,total:status.total,title:m.title,type:m.type,state:m.checkpoint};
+}
+
+/** Build an explicit playback schedule from ordered checkpoints. Durations are per-step,
+ * not inferred from capture timestamps, which describe the original recording session. */
+export function playbackPlan(project,secondsPerMoment=8){
+ const readiness=walkthroughReadiness(project);
+ if(!readiness.ready)throw Error(readiness.total===0?'Add moments first.':`Save checkpoints for moments: ${readiness.missing.join(', ')}`);
+ if(!Number.isInteger(secondsPerMoment)||secondsPerMoment<3||secondsPerMoment>30)throw Error('Step duration must be 3–30 seconds.');
+ let offset=0;
+ return project.moments.map((moment,index)=>{const item={index,title:moment.title,type:moment.type,offsetSeconds:offset,durationSeconds:moment.durationSeconds??secondsPerMoment,state:moment.checkpoint};offset+=item.durationSeconds;return item});
+}
+
+/** Validate a complete imported backup before it enters persistent storage. */
+export function normalizeBackup(payload){
+ if(!payload||payload.format!=='preview-project'||payload.version!==2)throw Error('Unsupported project backup.');
+ const raw=payload.project;
+ validateProject(raw);
+ if(typeof raw.name!=='string'||raw.name.length>80)throw Error('Invalid project name.');
+ if(typeof raw.fileName!=='string'||raw.fileName.length>255)throw Error('Invalid source filename.');
+ if(![30,45,60,90].includes(raw.duration))throw Error('Invalid target duration.');
+ if(typeof raw.ctaText!=='string'||raw.ctaText.length>160)throw Error('Invalid CTA text.');
+ if(typeof raw.ctaUrl!=='string'||raw.ctaUrl.length>2048||validateDestination(raw.ctaUrl)===null)throw Error('Invalid CTA URL.');
+ const seen=new Set();
+ const moments=raw.moments.map(m=>{
+  if(typeof m.id!=='string'||m.id.length>100||seen.has(m.id))throw Error('Invalid or duplicate moment ID.');
+  seen.add(m.id);
+  if(m.title.length>100||typeof m.notes!=='string'||m.notes.length>2000)throw Error('Invalid moment text.');
+  return {id:m.id,title:m.title,type:m.type,atSeconds:m.atSeconds,notes:m.notes,checkpoint:m.checkpoint??null,durationSeconds:m.durationSeconds??8};
+ });
+ return {name:raw.name,fileName:raw.fileName,moments,duration:raw.duration,ctaText:raw.ctaText,ctaUrl:raw.ctaUrl};
+}
+export function sequenceSummary(project){
+ validateProject(project);
+ const totalSeconds=project.moments.reduce((n,m)=>n+(m.durationSeconds??8),0);
+ return {totalSeconds,targetSeconds:project.duration,overBudget:totalSeconds>project.duration,remainingSeconds:project.duration-totalSeconds};
+}
+export function reorderMoment(items,sourceId,targetId){
+ const from=items.findIndex(m=>m.id===sourceId),to=items.findIndex(m=>m.id===targetId);
+ if(from<0||to<0||from===to)return [...items];
+ const copy=[...items];const [moving]=copy.splice(from,1);copy.splice(to,0,moving);return copy;
+}

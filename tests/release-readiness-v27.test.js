@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {exportReadiness} from '../src/export-readiness.js';
+const ready={fileName:'game.html',moments:[{title:'First',durationSeconds:8,checkpoint:{}}],duration:60,ctaUrl:'https://example.com'};
+test('loaded game with configured moments can export',()=>assert.equal(exportReadiness(ready,true).ready,true));
+test('saved filename without loaded game cannot export',()=>assert.equal(exportReadiness(ready,false).ready,false));
+test('missing game provides actionable reimport message',()=>assert.match(exportReadiness(ready,false).issues.join(' '),/Reimport/));
+test('missing destination is blocked',()=>assert.equal(exportReadiness({...ready,ctaUrl:'https://'},true).ready,false));
+test('app guards manifest download with readiness',()=>assert.match(readFileSync(new URL('../src/app.js',import.meta.url),'utf8'),/if\(!check.ready\)\{notify\('Review the readiness checklist/));
+test('export view no longer claims to publish',()=>assert.doesNotMatch(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/EXPORT & PUBLISH/));

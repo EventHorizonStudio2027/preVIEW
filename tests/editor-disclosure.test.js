@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const js=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+const css=readFileSync(new URL('../src/timeline-polish.css',import.meta.url),'utf8');
+test('three advanced tools are hidden until expanded',()=>assert.equal((html.match(/<details class="advanced-tool">/g)||[]).length,3));
+test('each advanced disclosure has a visible summary',()=>assert.equal((html.match(/<summary>/g)||[]).length,3));
+test('advanced tool disclosures are structurally balanced',()=>assert.equal((html.match(/<\/details>/g)||[]).length,3));
+test('advanced disclosure keyboard focus is visible',()=>assert.match(css,/\.advanced-tool>summary:focus-visible/));
+test('undo is cleared when changing the loaded game',()=>assert.match(js,/function clearGame\(\)\{deletedMoment=null;\$\('undoDelete'\)\.hidden=true/));
+test('export readiness describes manifest, not playable game',()=>assert.match(js,/Ready to export a planning manifest/));
+test('undo button has a descriptive accessible label',()=>assert.match(html,/aria-label="Undo last removed moment"/));

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {inspectHtml} from '../src/import-check.js';
+test('unquoted asset paths are detected',()=>assert.equal(inspectHtml('<script src=js/app.js></script>').counts.local,1));
+test('srcset lists are detected',()=>assert.equal(inspectHtml('<img srcset="a.png 1x, b.png 2x">').counts.local,2));
+test('CSS url and imports are detected',()=>assert.equal(inspectHtml('<style>@import "theme.css";body{background:url(bg.png)}</style>').counts.local,2));
+test('iframe and poster paths are detected',()=>assert.equal(inspectHtml('<iframe src="scene.html"></iframe><video poster="poster.png"></video>').counts.local,2));
+test('unsafe schemes and traversal paths rejected',()=>assert.equal(inspectHtml('<img src="../secret.png"><script src="file:///etc/passwd"></script>').counts.unsafe,2));
+test('remote protocol relative URL is remote',()=>assert.equal(inspectHtml('<script src="//cdn.example/x.js"></script>').counts.remote,1));
+test('data and blob references ignored',()=>assert.equal(inspectHtml('<img src="data:image/png;base64,AA"><img src="blob:abc">').totalReferences,0));
+test('report capped but counts exact',()=>{const r=inspectHtml('<img src="a.png">'.repeat(120));assert.equal(r.references.length,100);assert.equal(r.counts.local,120)});
