@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createMoment,manifest,validateProject} from '../src/model.js';
+test('checkpoint is retained in exported manifest',()=>{const m=createMoment('Boss','wow',3);m.checkpoint={score:7};const data=manifest({name:'Demo',moments:[m],ctaUrl:''});assert.deepEqual(data.moments[0].checkpoint,{score:7});assert.equal(data.capabilities.restorableCheckpoints,true)});
+test('manifest does not claim checkpoint support without states',()=>{const data=manifest({moments:[createMoment('Start','hook',0)]});assert.equal(data.capabilities.restorableCheckpoints,false)});
+test('rejects oversized checkpoint',()=>{const m=createMoment('Test','hook',0);m.checkpoint={large:'a'.repeat(251000)};assert.throws(()=>validateProject({moments:[m]}),/Invalid moment/)});
