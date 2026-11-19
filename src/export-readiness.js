@@ -1,9 +1,10 @@
 /** Pure, advisory checks for a planning manifest; no hosted build implied. */
 import {validateDestination} from './model.js';
-export function exportReadiness(project) {
+export function exportReadiness(project, sourceLoaded = true) {
   const issues=[];
   if (!project || !Array.isArray(project.moments)) return {ready:false,issues:['Project data is invalid.']};
   if (!project.fileName) issues.push('Import a game before exporting.');
+  else if (!sourceLoaded) issues.push('Reimport the game HTML before exporting.');
   if (project.moments.length===0) issues.push('Add at least one moment.');
   const total=project.moments.reduce((sum,m)=>sum+(Number.isFinite(m.durationSeconds)?m.durationSeconds:8),0);
   if (Number.isFinite(project.duration) && total>project.duration) issues.push('Timeline exceeds target by '+(total-project.duration)+' seconds.');
