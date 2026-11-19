@@ -212,3 +212,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Review & Export accepts additional local files and embeds matched HTML/CSS asset references as data URLs into the standalone playable HTML.
 - Selected asset counts are visible, unmatched assets are reported, and six unit tests cover bundling.
 - Limits: up to 30 MB selected matched assets; relative imports inside JavaScript modules, dynamic fetch paths and nested CSS dependencies are not yet rewritten. No hosted publishing yet.
+
+## v3.6 — Bundling reliability
+- Reject ambiguous same-name asset matches rather than silently choosing a wrong file.
+- Preserve missing-asset warnings in the final export notification.
+- Improve static srcset reference substitution and clarify offline limitations in the export interface.
+- Three regression tests cover exact matches, ambiguous assets and srcset.
