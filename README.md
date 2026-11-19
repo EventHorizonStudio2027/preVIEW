@@ -119,3 +119,5 @@ Added a visible-on-focus skip navigation link, programmatic main focus target, k
 
 ## v2.0 first-run UX
 The empty player now offers a prominent **Try the playable demo** action. The browser smoke test remains blocked by this execution environment (local HTTP requests receive ERR_BLOCKED_BY_ADMINISTRATOR); do not claim browser verification passed.
+## v2.1 workspace development
+Local v2.1 adds reversible moment removal, contextual editor health, safe project-based JSON filenames, Cmd/Ctrl+S backup, and explicit session-state validation. Local Node suite: 68/68 passing. The GitHub branch includes the new helper, tests, markup, and CSS, **but not yet the modified application controller** (`src/app.js`) or base stylesheet (`src/styles.css`); the new controls are not functional from this branch until the remaining source is synchronized. Browser smoke remains unverified. See issues #1 and #2.
