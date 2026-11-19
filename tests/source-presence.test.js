@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {creatorProgress} from '../src/workflow.js';
+const project={fileName:'game.html',moments:[{title:'Start'}],ctaUrl:'https://example.com'};
+test('missing source makes import and review incomplete',()=>assert.deepEqual(creatorProgress(project,false).map(s=>s.done),[false,false,false]));
+test('available source allows configured steps',()=>assert.deepEqual(creatorProgress(project,true).map(s=>s.done),[true,true,true]));
+test('reimport guidance appears for missing game',()=>assert.match(creatorProgress(project,false)[0].detail,/Reimport/));
+test('new project has no false missing source warning',()=>assert.match(creatorProgress({fileName:''},false)[0].detail,/Choose HTML/));
+test('app checks iframe presence before claiming source loaded',()=>assert.match(readFileSync(new URL('../src/app.js',import.meta.url),'utf8'),/creatorProgress\(state,Boolean\(gameUrl/));
