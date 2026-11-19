@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bundleAssets,assetPaths} from '../src/asset-bundle.js';
+const file=(name,text,type='image/png')=>({name,size:new TextEncoder().encode(text).length,type,arrayBuffer:async()=>new TextEncoder().encode(text).buffer});
+test('detects referenced local files',()=>assert.deepEqual(assetPaths('<img src="sprite.png">'),['sprite.png']));
+test('inlines supplied image asset',async()=>{const r=await bundleAssets('<img src="sprite.png">',[file('sprite.png','PNG')]);assert.equal(r.matched,1);assert.match(r.html,/data:image\/png;base64,/);assert.deepEqual(r.missing,[])});
+test('reports missing assets instead of claiming bundled',async()=>{const r=await bundleAssets('<img src="missing.png">',[]);assert.deepEqual(r.missing,['missing.png']);assert.equal(r.matched,0)});
+test('keeps source unchanged without assets',async()=>{const s='<p>hello</p>';assert.equal((await bundleAssets(s,[])).html,s)});
+test('rejects path traversal',()=>assert.deepEqual(assetPaths('<img src="../secret.png">'),[]));
+test('replaces repeated asset references',async()=>{const r=await bundleAssets('<img src="sprite.png"><img src="sprite.png">',[file('sprite.png','PNG')]);assert.equal((r.html.match(/data:image\/png;base64/g)||[]).length,2)});
