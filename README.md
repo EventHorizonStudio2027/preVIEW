@@ -183,3 +183,9 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 
 ## Original preVIEW brand restored
 The creator workspace now displays `assets/brand/wordmark-light.png` in navigation and `assets/brand/brand-mark.png` in the hero and project tile. The temporary `mark.svg` remains in the repository only for compatibility, not as the displayed logo. Four brand regression tests protect the asset references.
+
+## v3.1 — Planning manifest vs guided playback
+- Checkpoints are optional for planning manifest export, but still required for guided playback.
+- Export blockers and optional setup notices appear separately in the review panel.
+- Missing source, invalid CTA, empty moments and overlong timeline remain export blockers.
+- Added six focused regression tests. Live publication of exported playable builds is not implemented.
