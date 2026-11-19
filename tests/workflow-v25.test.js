@@ -13,3 +13,5 @@ test('URL containing whitespace is rejected for review',()=>assert.equal(creator
 test('unsupported URL scheme is rejected for review',()=>assert.equal(creatorProgress({fileName:'g.html',moments:[{}],ctaUrl:'javascript:alert(1)'}).at(-1).done,false));
 test('valid HTTP destination remains accepted',()=>assert.equal(creatorProgress({fileName:'g.html',moments:[{}],ctaUrl:'http://example.com'}).at(-1).done,true));
 test('current step exposed to assistive technology',async()=>{const {readFileSync}=await import('node:fs');const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(app,/setAttribute\('aria-current','step'\)/)});
+
+test('import step directly opens file picker',async()=>{const {readFileSync}=await import('node:fs');const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(app,/dataset.step==='import'[^\\n]*#gameFile[^\\n]*\\.click\\(\\)/)});
