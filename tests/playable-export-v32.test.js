@@ -11,3 +11,7 @@ test('rejects missing source and invalid CTA',()=>{assert.throws(()=>buildPlayab
 test('playable download name has safe HTML extension',()=>assert.equal(safeExportName('My Game!','playable'),'preview-my-game-playable.html'));
 test('export button exists and distinguishes playable HTML from manifest',()=>{const h=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(h,/id="exportPlayable"/);assert.match(h,/id="exportManifest"/)});
 test('app keeps source in memory only while game is loaded',()=>{const s=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(s,/function clearGame\(\)\{deletedMoment=null;\$\('undoDelete'\)\.hidden=true;importedHtml=null/);assert.match(s,/importedHtml=html/)});
+
+test('rejects unsafe local traversal and script asset schemes on export',()=>{assert.throws(()=>buildPlayableHtml(project,'<img src="../secret.png">'),/unsafe asset/);assert.throws(()=>buildPlayableHtml(project,'<script src="javascript:alert(1)"></script>'),/unsafe asset/)});
+test('preserves Unicode source through base64 without inserting executable outer markup',()=>{const source='<p>你好 🎮 café</p>';const output=buildPlayableHtml(project,source);const encoded=output.match(/const encoded='([^']+)'/)[1];assert.equal(new TextDecoder().decode(Uint8Array.from(atob(encoded),c=>c.charCodeAt(0))),source)});
+test('rejects oversized imported HTML before encoding',()=>assert.throws(()=>buildPlayableHtml(project,'x'.repeat(20*1024*1024+1)),/20 MB/));
