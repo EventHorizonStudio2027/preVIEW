@@ -129,3 +129,12 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Workspace header explicitly displays **Not published**; a planning manifest is not a deployed playable preview.
 - Includes six additional regression tests.
 - GitHub source sync and browser smoke remain release blockers; no hosted deployment is claimed.
+
+## v2.4 — HTML import safety and diagnostics
+
+- The importer blocks unsafe references using the **complete** inspection count, not the first 100 references shown in the report.
+- Encoded parent-directory traversal, encoded unsafe schemes, malformed percent encoding, and backslash paths are classified as unsafe.
+- Local and remote asset counts appear in a compact contextual status strip beneath the player. Remote assets are network-dependent; local relative files may not work when importing one HTML file.
+- Added eight automated tests across import security and diagnostics; local Node suite: **89/89 passed**.
+- This is static import inspection, not a comprehensive HTML malware scanner. Imported game scripts execute only within the sandboxed iframe; review untrusted games before importing.
+- Changes committed to `develop`; do not merge to `main` without a green CI run for the new commit.
