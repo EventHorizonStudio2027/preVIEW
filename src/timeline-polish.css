@@ -112,3 +112,8 @@
 .empty-icon{width:104px;height:80px;background:#fff;border-radius:16px}
 .empty-icon img{width:104px;height:80px;object-fit:contain;object-position:center;border-radius:0}
 @media(max-width:740px){.sidebar .brand-wordmark{max-width:172px}.project-thumb{width:64px;height:64px;min-width:64px}.project-thumb img{width:60px;height:60px}}
+
+/* v3.1: separate actionable export blockers from optional playback setup. */
+.export-advisory{margin-top:12px;padding:12px 14px;border-radius:10px;border:1px solid #e9e1ff;background:#fff;color:#665b80}
+.export-advisory strong{font-size:12px;letter-spacing:.01em;color:#7958e8}
+.export-advisory ul{margin:6px 0 0;padding-left:18px}
