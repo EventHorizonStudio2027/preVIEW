@@ -202,3 +202,8 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Chromium browser smoke now actually opens and clicks a button inside generated standalone HTML and checks Unicode/CTA fidelity.
 - Add three unit regressions for unsafe references, Unicode encoding, and size limits.
 - Review UI clarifies single-file deliverable, self-hosting and missing asset bundling. Hosted links remain a future feature.
+
+## v3.4 — Playable export health
+- Review & Export now shows the imported game's source size and counts of local, remote and unsafe asset references.
+- Unsafe references disable playable export before download; local and remote dependencies remain visible as caveats.
+- Seven unit tests cover source diagnostics and interface behavior. Asset bundling and hosted links remain outstanding.

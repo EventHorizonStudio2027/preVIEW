@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {playableDiagnostics,buildPlayableHtml} from '../src/playable-export.js';
+const project={name:'Game',ctaUrl:'https://example.com',ctaText:'Play'};
+test('empty source has no available export',()=>assert.deepEqual(playableDiagnostics(null),{available:false,local:0,remote:0,unsafe:0,bytes:0,portable:false}));
+test('inline source is portable',()=>{const r=playableDiagnostics('<html><body>Play</body></html>');assert.equal(r.portable,true);assert.equal(r.local,0)});
+test('external and local assets are counted separately',()=>{const r=playableDiagnostics('<img src="sprites.png"><script src="https://example.com/sdk.js"></script>');assert.equal(r.local,1);assert.equal(r.remote,1);assert.equal(r.portable,false)});
+test('unsafe assets are detected and rejected on export',()=>{const source='<img src="../private.png">';assert.equal(playableDiagnostics(source).unsafe,1);assert.throws(()=>buildPlayableHtml(project,source),/unsafe/)});
+test('Unicode source size is measured in bytes',()=>assert.equal(playableDiagnostics('🎮').bytes,4));
+test('review includes visible asset health region',()=>assert.match(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/id="playableHealth"[^>]*role="status"/));
+test('export button disabled for unsafe source',()=>assert.match(readFileSync(new URL('../src/app.js',import.meta.url),'utf8'),/assetHealth\.unsafe>0/));

@@ -123,3 +123,11 @@
 #exportPlayable:disabled{opacity:.48;box-shadow:none;cursor:not-allowed}
 #publish .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 #publish .actions #exportManifest{background:#fff;border:1px solid #e9e1ff;color:#665b80}
+
+/* v3.4: readable export health without cluttering the white canvas. */
+.playable-health{padding:15px 17px;border:1px solid #e9e1ff;border-radius:14px;background:#faf9ff;color:#605978}
+.playable-health strong{display:block;font-size:14px;color:#2b2e3a}
+.playable-health p{font-size:12px;line-height:1.55;margin:7px 0 0}
+.playable-health[data-level=ready]{border-color:#cdebdc;background:#f8fffb}
+.playable-health[data-level=attention]{border-color:#e9d6ac;background:#fffdf7}
+.playable-health[data-level=error]{border-color:#f3c8cf;background:#fff9fa}
