@@ -22,3 +22,9 @@
 /* v1.9: persistent, calm workspace context while editing long timelines. */
 .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(121,88,232,.08)}
 @media(prefers-reduced-transparency:reduce){.topbar{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* v2.0: accessible first-run demo CTA */
+.empty-demo-button{margin-top:14px;border:1px solid #7958E8;background:#7958E8;color:#fff;border-radius:11px;padding:11px 18px;font-weight:700;cursor:pointer;box-shadow:0 5px 14px rgba(121,88,232,.17);transition:background .15s ease,transform .15s ease}
+.empty-demo-button:hover{background:#6747D4;transform:translateY(-1px)}
+.empty-demo-button:focus-visible{outline:3px solid #2B2E3A;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.empty-demo-button{transition:none}.empty-demo-button:hover{transform:none}}
