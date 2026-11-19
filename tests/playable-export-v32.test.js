@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {buildPlayableHtml} from '../src/playable-export.js';
+import {safeExportName} from '../src/workspace-tools.js';
+const project={name:'Test <game>',ctaText:'Play now',ctaUrl:'https://example.com/game'};
+test('exports a self-contained HTML shell with sandboxed playable game',()=>{const h=buildPlayableHtml(project,'<!doctype html><title>Test</title><p>Hello</p>');assert.match(h,/sandbox="allow-scripts allow-pointer-lock"/);assert.match(h,/srcdoc=/);assert.match(h,/atob\(encoded\)/);assert.match(h,/Play now/)});
+test('escapes project title to prevent markup injection',()=>{const h=buildPlayableHtml(project,'<p>ok</p>');assert.match(h,/Test &lt;game&gt;/);assert.doesNotMatch(h,/<title>Test <game>/)});
+test('game source is encoded instead of injected into outer HTML',()=>{const h=buildPlayableHtml(project,'</script><script>alert(1)</script>');assert.doesNotMatch(h,/<script>alert\(1\)<\/script>/)});
+test('rejects missing source and invalid CTA',()=>{assert.throws(()=>buildPlayableHtml(project,''),/Import/);assert.throws(()=>buildPlayableHtml({...project,ctaUrl:'javascript:alert(1)'},'<p>x</p>'),/valid HTTP/)});
+test('playable download name has safe HTML extension',()=>assert.equal(safeExportName('My Game!','playable'),'preview-my-game-playable.html'));
+test('export button exists and distinguishes playable HTML from manifest',()=>{const h=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(h,/id="exportPlayable"/);assert.match(h,/id="exportManifest"/)});
+test('app keeps source in memory only while game is loaded',()=>{const s=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(s,/function clearGame\(\)\{deletedMoment=null;\$\('undoDelete'\)\.hidden=true;importedHtml=null/);assert.match(s,/importedHtml=html/)});

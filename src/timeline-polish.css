@@ -117,3 +117,9 @@
 .export-advisory{margin-top:12px;padding:12px 14px;border-radius:10px;border:1px solid #e9e1ff;background:#fff;color:#665b80}
 .export-advisory strong{font-size:12px;letter-spacing:.01em;color:#7958e8}
 .export-advisory ul{margin:6px 0 0;padding-left:18px}
+
+/* v3.2: make the real playable deliverable the visual primary action. */
+#exportPlayable{min-height:46px;padding:12px 20px;box-shadow:0 7px 24px rgba(121,88,232,.2)}
+#exportPlayable:disabled{opacity:.48;box-shadow:none;cursor:not-allowed}
+#publish .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#publish .actions #exportManifest{background:#fff;border:1px solid #e9e1ff;color:#665b80}
