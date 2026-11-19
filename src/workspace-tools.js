@@ -1,8 +1,8 @@
 /** Pure, side-effect-free workspace helpers. */
 export function safeExportName(name,kind='backup'){
  const clean=String(name||'untitled').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'untitled';
- if(!['backup','manifest'].includes(kind))throw Error('Invalid export type');
- return `preview-${clean}-${kind}.json`;
+ if(!['backup','manifest','playable'].includes(kind))throw Error('Invalid export type');
+ return `preview-${clean}-${kind}.${kind==='playable'?'html':'json'}`;
 }
 export function canMarkMoment(start){return typeof start==='number'&&Number.isFinite(start)&&start>=0}
 export function projectHealth(project){
