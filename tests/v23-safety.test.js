@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {exportReadiness} from '../src/export-readiness.js';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+const css=readFileSync(new URL('../src/timeline-polish.css',import.meta.url),'utf8');
+test('invalid URL with HTTP prefix is rejected',()=>assert.equal(exportReadiness({fileName:'g.html',duration:60,ctaUrl:'https://',moments:[{durationSeconds:8,checkpoint:{}}]}).ready,false));
+test('well-formed HTTPS URL accepted',()=>assert.equal(exportReadiness({fileName:'g.html',duration:60,ctaUrl:'https://example.com/play',moments:[{durationSeconds:8,checkpoint:{}}]}).ready,true));
+test('explicit unpublished status in workspace header',()=>assert.match(html,/aria-label="Publication status"[^>]*>● Not published/));
+test('unpublished status has visible pill styling',()=>assert.match(css,/\.draft-label\{/));
+test('HTML import failures are caught and shown to creator',()=>assert.match(app,/Import failed:.*err.message/));
+test('import file picker resets after validation error',()=>assert.match(app,/e.target.value='';return/));
