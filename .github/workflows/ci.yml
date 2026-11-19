@@ -13,13 +13,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Unit tests
-        run: npm test
+      - run: npm install --no-audit --no-fund
+      - run: npm test
   source-integrity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify complete application was synchronized
+      - name: Verify complete application source
         shell: bash
         run: |
           set -euo pipefail
@@ -29,4 +29,15 @@ jobs:
               exit 1
             fi
           done
-          echo "Application source integrity passed."
+  browser-smoke:
+    needs: [unit-tests, source-integrity]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
