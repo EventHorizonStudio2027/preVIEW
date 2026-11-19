@@ -180,3 +180,6 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Overview no longer suggests the exported planning blueprint is directly shareable.
 - Export action shows disabled and enabled states based on readiness.
 - 115/115 local Node tests passed. Public Pages deployment still requires live verification.
+
+## Original preVIEW brand restored
+The creator workspace now displays `assets/brand/wordmark-light.png` in navigation and `assets/brand/brand-mark.png` in the hero and project tile. The temporary `mark.svg` remains in the repository only for compatibility, not as the displayed logo. Four brand regression tests protect the asset references.
