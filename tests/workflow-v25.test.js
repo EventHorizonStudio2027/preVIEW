@@ -6,3 +6,5 @@ test('import alone completes first step',()=>assert.deepEqual(creatorProgress({f
 test('moments alone do not mark review complete',()=>assert.deepEqual(creatorProgress({moments:[{}],ctaUrl:'https://example.com'}).map(x=>x.done),[false,true,false]));
 test('all three complete with imported game, moment and destination',()=>assert.deepEqual(creatorProgress({fileName:'game.html',moments:[{}],ctaUrl:'https://example.com'}).map(x=>x.done),[true,true,true]));
 test('malformed destination does not mark review complete',()=>assert.equal(creatorProgress({fileName:'g.html',moments:[{}],ctaUrl:'https://'}).at(-1).done,false));
+
+test('browser history navigation listener is registered',async()=>{const {readFileSync}=await import('node:fs');const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(app,/addEventListener\('hashchange'/)});
