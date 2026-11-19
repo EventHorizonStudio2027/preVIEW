@@ -18,3 +18,7 @@
 .project-status{display:inline-flex;align-items:center;gap:7px;background:#F7F5FF;color:#59477D;border:1px solid #E9E1FF;font-weight:650}
 .project-status .status-indicator{height:7px;width:7px;border-radius:50%;background:#7958E8;box-shadow:0 0 0 3px #7958E81C}
 @media(max-width:440px){.project-status{font-size:10px;padding:5px 8px}}
+
+/* v1.9: persistent, calm workspace context while editing long timelines. */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(121,88,232,.08)}
+@media(prefers-reduced-transparency:reduce){.topbar{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none}}
