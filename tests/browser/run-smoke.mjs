@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { buildPlayableHtml } from '../../src/playable-export.js';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -63,9 +64,19 @@ try {
   await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
   await page.goBack({waitUntil:'domcontentloaded'});
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
+  // Exercise the actual exported artifact, including Unicode, sandboxed interaction and CTA.
+  const exported = buildPlayableHtml({name:'Arcade 🎮',ctaText:'Play the full game',ctaUrl:'https://example.com/full'},
+    '<!doctype html><html><body><button id="counter" onclick="this.textContent=\'Clicked ✓\'">Click me 🎮</button></body></html>');
+  await page.setContent(exported, { waitUntil: 'domcontentloaded' });
+  const game = page.frameLocator('#game');
+  await game.locator('#counter').waitFor();
+  await game.locator('#counter').click();
+  if (await game.locator('#counter').textContent() !== 'Clicked ✓') throw new Error('Exported playable game did not respond to interaction');
+  if (await page.locator('a.cta').getAttribute('href') !== 'https://example.com/full') throw new Error('Exported CTA destination incorrect');
+  if (!await page.getByText('Arcade 🎮').count()) throw new Error('Exported title lost Unicode characters');
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
-  console.log('Browser smoke: PASS (model fixture, editor navigation, demo loading)');
+  console.log('Browser smoke: PASS (workspace, demo, exported playable game, Unicode and CTA)');
 } catch (e) {
   console.error('Browser smoke: FAIL:', e.message);
   if (page) {
