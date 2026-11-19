@@ -138,3 +138,11 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Added eight automated tests across import security and diagnostics; local Node suite: **89/89 passed**.
 - This is static import inspection, not a comprehensive HTML malware scanner. Imported game scripts execute only within the sandboxed iframe; review untrusted games before importing.
 - Changes committed to `develop`; do not merge to `main` without a green CI run for the new commit.
+
+## v2.5 — Creator journey
+
+- New responsive three-stage navigation (Import → Moments → Review) with live completion indicators and keyboard-accessible controls.
+- Stage completion derives from current project data and updates after changes; it is a progress guide, not a publication claim.
+- Browser back/forward navigation now synchronizes the active workspace view.
+- Six new automated checks; local Node suite: **95/95 passed**.
+- Development is on `develop`. GitHub Actions status for the latest changes must be verified before a release.
