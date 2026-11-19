@@ -153,3 +153,11 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Moments no longer appear completed without an imported source.
 - Current workflow stage is visibly highlighted and announced with `aria-current="step"`; unchanged hash routes are not rewritten.
 - Local regression suite: **99/99 passing**. GitHub CI verification is tracked in [active issue #1](https://github.com/FatesPassage/preVIEW/issues/4).
+
+## v2.6 — Honest source availability
+
+- Creator journey distinguishes a remembered source filename from a currently loaded playable game.
+- Restored projects and refreshed tabs show **Reimport the game to play it** until the source is loaded.
+- Review cannot be marked complete with a missing game source.
+- The project overview marks a missing source as **Reimport to play** instead of implying the game is loaded.
+- New regression tests cover source availability; **105/105 local Node tests passed**. CI for the latest develop commit still requires confirmation.
