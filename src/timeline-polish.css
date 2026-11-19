@@ -28,3 +28,10 @@
 .empty-demo-button:hover{background:#6747D4;transform:translateY(-1px)}
 .empty-demo-button:focus-visible{outline:3px solid #2B2E3A;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.empty-demo-button{transition:none}.empty-demo-button:hover{transform:none}}
+
+/* v2.1: calm contextual status and reversible actions */
+.editor-context{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:12px 0}
+.editor-health{font-size:12px;font-weight:650;padding:7px 11px;border-radius:999px;color:#59477d;background:#f7f5ff;border:1px solid #e9e1ff}
+.editor-health[data-level="ready"]{color:#236852;background:#eaf7f1;border-color:#c9e9da}
+.editor-health[data-level="attention"]{color:#8c4d1d;background:#fff5e7;border-color:#f3dfc5}
+#undoDelete{font-size:12px;min-height:32px}
