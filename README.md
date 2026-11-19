@@ -218,3 +218,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Preserve missing-asset warnings in the final export notification.
 - Improve static srcset reference substitution and clarify offline limitations in the export interface.
 - Three regression tests cover exact matches, ambiguous assets and srcset.
+
+## v3.7 — Folder selection and preflight
+- Add asset-folder picker for nested game files, with deterministic path matching.
+- Show matched, missing, ambiguous references and selected asset size before exporting.
+- Reject duplicate paths, clear selections when unloading games, and add five regression tests.
+- Limitations: folder selection depends on browser support; nested CSS, dynamic fetch and module imports remain unsupported; hosted publishing not yet implemented.
