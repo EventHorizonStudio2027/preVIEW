@@ -146,3 +146,10 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Browser back/forward navigation now synchronizes the active workspace view.
 - Six new automated checks; local Node suite: **95/95 passed**.
 - Development is on `develop`. GitHub Actions status for the latest changes must be verified before a release.
+
+### v2.5.1 — Progress accuracy and navigation polish
+
+- Creator progress now uses the same URL parser as the model and backup validator, so malformed destinations cannot falsely mark Review complete.
+- Moments no longer appear completed without an imported source.
+- Current workflow stage is visibly highlighted and announced with `aria-current="step"`; unchanged hash routes are not rewritten.
+- Local regression suite: **99/99 passing**. GitHub CI verification is tracked in [active issue #1](https://github.com/FatesPassage/preVIEW/issues/4).
