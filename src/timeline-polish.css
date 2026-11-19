@@ -79,3 +79,7 @@
 #exportReadiness{border:1px solid #e9e1ff;background:#f7f5ff;border-radius:12px;padding:14px 16px;line-height:1.55}
 #exportReadiness ul{margin:8px 0 0;padding-left:20px}
 #exportReadiness li+li{margin-top:5px}
+
+/* v2.8: clearly communicate export eligibility at the point of action */
+#exportManifest:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2)}
+#exportManifest:not(:disabled){box-shadow:0 4px 16px rgba(121,88,232,.18)}
