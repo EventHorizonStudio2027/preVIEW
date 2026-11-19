@@ -38,12 +38,19 @@ try {
 
   await page.goto(origin + '/index.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await page.getByRole('heading', { name: 'Build previews worth playing.' }).waitFor();
+  await page.locator('[data-step="import"]').waitFor();
+  if (await page.locator('[data-step="import"]').getAttribute('class') === 'completed') throw new Error('Fresh project should not mark import completed');
   await page.getByRole('link', { name: /Preview editor/ }).click();
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
   await page.locator('#loadDemo').click();
   await page.waitForFunction(() => document.querySelector('#gameFrame')?.getAttribute('src') === 'examples/checkpoint-demo.html');
   await page.locator('#gameFrame').contentFrame().locator('body').waitFor();
   await page.waitForFunction(() => document.querySelector('#sessionStatus')?.textContent === 'Demo loaded');
+  await page.locator('[data-step="import"].completed').waitFor();
+  await page.locator('[data-step="review"]').click();
+  await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
+  await page.goBack({waitUntil:'domcontentloaded'});
+  await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (model fixture, editor navigation, demo loading)');
