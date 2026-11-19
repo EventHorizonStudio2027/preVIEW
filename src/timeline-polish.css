@@ -83,3 +83,11 @@
 /* v2.8: clearly communicate export eligibility at the point of action */
 #exportManifest:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.2)}
 #exportManifest:not(:disabled){box-shadow:0 4px 16px rgba(121,88,232,.18)}
+
+/* Brand restoration: original artwork instead of temporary vector placeholder. */
+.sidebar .brand{padding-left:8px;padding-right:8px;min-height:80px}
+.brand-wordmark{display:block;width:min(100%,196px);height:auto;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(121,88,232,.10))}
+.art-play{width:80px;height:80px;margin:12px auto;background:transparent;border-radius:18px;box-shadow:none}
+.art-play img{width:76px;height:76px;object-fit:contain;border-radius:16px}
+.project-thumb img{width:58px;height:58px;object-fit:contain;border-radius:12px}
+@media(max-width:740px){.brand-wordmark{width:150px}.sidebar .brand{min-height:58px}}

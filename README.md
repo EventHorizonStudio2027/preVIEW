@@ -174,3 +174,12 @@ Advanced walkthrough, timed playback, and telemetry tools are collapsed by defau
 - Expected public URL after successful deployment: https://fatespassage.github.io/preVIEW/ (not confirmed live yet).
 - Do not treat the GitHub Pages URL as working until the Pages deployment job succeeds. `develop` remains the development branch.
 - Export action now visually disables when the readiness checklist fails; its existing click-time validation remains as a second guard.
+
+## v2.8 — Site release safeguards
+- GitHub Pages workflow checks for index.html, application JS/CSS, demo HTML and brand asset before uploading.
+- Overview no longer suggests the exported planning blueprint is directly shareable.
+- Export action shows disabled and enabled states based on readiness.
+- 115/115 local Node tests passed. Public Pages deployment still requires live verification.
+
+## Original preVIEW brand restored
+The creator workspace now displays `assets/brand/wordmark-light.png` in navigation and `assets/brand/brand-mark.png` in the hero and project tile. The temporary `mark.svg` remains in the repository only for compatibility, not as the displayed logo. Four brand regression tests protect the asset references.
