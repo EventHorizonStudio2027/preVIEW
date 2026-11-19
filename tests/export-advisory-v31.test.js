@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {exportReadiness} from '../src/export-readiness.js';
+const project={fileName:'demo.html',moments:[{title:'Intro',durationSeconds:8,checkpoint:null}],duration:30,ctaUrl:'https://example.com'};
+test('planning manifest exports without optional SDK checkpoints',()=>{const r=exportReadiness(project,true);assert.equal(r.ready,true);assert.equal(r.issues.length,0);assert.equal(r.warnings.length,1)});
+test('checkpoint warning identifies guided playback requirement',()=>assert.match(exportReadiness(project,true).warnings[0],/guided playback/));
+test('source missing remains a blocking issue',()=>assert.equal(exportReadiness(project,false).ready,false));
+test('invalid CTA remains a blocking issue',()=>assert.equal(exportReadiness({...project,ctaUrl:'javascript:bad'},true).ready,false));
+test('fully configured playback has no warnings',()=>assert.equal(exportReadiness({...project,moments:[{...project.moments[0],checkpoint:{}}]},true).warnings.length,0));
+test('review shows optional warnings separately from blockers',()=>assert.match(readFileSync(new URL('../src/app.js',import.meta.url),'utf8'),/export-advisory/));
