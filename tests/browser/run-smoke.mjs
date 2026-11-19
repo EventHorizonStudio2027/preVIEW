@@ -43,7 +43,7 @@ try {
   await page.locator('#loadDemo').click();
   await page.waitForFunction(() => document.querySelector('#gameFrame')?.getAttribute('src') === 'examples/checkpoint-demo.html');
   await page.locator('#gameFrame').contentFrame().locator('body').waitFor();
-  await page.locator('#sessionStatus').getByText('Demo loaded', { exact: true }).waitFor();
+  await page.waitForFunction(() => document.querySelector('#sessionStatus')?.textContent === 'Demo loaded');
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (model fixture, editor navigation, demo loading)');
