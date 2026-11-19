@@ -102,3 +102,13 @@
 .empty-icon{overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
 .empty-icon img{display:block;width:76px;height:56px;max-width:none;object-fit:fill;border-radius:0}
 @media(max-width:740px){.sidebar .brand{padding:0 6px 12px;min-height:48px}.sidebar .brand-wordmark{max-width:172px}}
+
+/* v3.0 brand fidelity: no distorted artwork, dedicated icon variants. */
+.sidebar .brand-wordmark{aspect-ratio:1298/329;object-fit:contain;object-position:left center;max-width:220px}
+.hero-art .art-play{width:116px;height:86px;overflow:hidden;background:#fff;border-radius:12px}
+.hero-art .art-play img{width:116px;height:86px;object-fit:contain;object-position:center center;border-radius:0}
+.project-thumb{width:72px;height:72px;min-width:72px;background:#fff;border:1px solid #eee7ff;border-radius:16px}
+.project-thumb img{width:66px;height:66px;object-fit:contain;object-position:center;border-radius:13px}
+.empty-icon{width:104px;height:80px;background:#fff;border-radius:16px}
+.empty-icon img{width:104px;height:80px;object-fit:contain;object-position:center;border-radius:0}
+@media(max-width:740px){.sidebar .brand-wordmark{max-width:172px}.project-thumb{width:64px;height:64px;min-width:64px}.project-thumb img{width:60px;height:60px}}
