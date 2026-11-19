@@ -70,3 +70,7 @@
 .creator-steps button.active strong{color:#6544c8}
 .creator-steps button.active:not(.completed) .step-num{background:#7958e8;color:#fff}
 @media(prefers-reduced-motion:no-preference){.creator-steps button{transition:border-color .15s ease,background-color .15s ease,box-shadow .15s ease}}
+
+/* v2.6: distinguish missing source from completed creation stages */
+.creator-steps button:not(.completed):not(.active) .step-num{border:1px solid #e9e1ff}
+.creator-steps button[aria-label*="Reimport"]{border-style:dashed;background:#fffcf5}
