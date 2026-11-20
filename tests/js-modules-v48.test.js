@@ -34,3 +34,7 @@ test('fails closed for non-literal dynamic imports',async()=>{
 test('rejects JavaScript module path traversal outside project root',()=>{
  assert.throws(()=>javascriptModuleDependencies("import '../escape.js';",'main.js'),/escapes project folder/);
 });
+
+test('fails clearly for local imports in inline module scripts',async()=>{
+ await assert.rejects(bundleAssets('<script type="module">import "./inline.js";</script>',[file('inline.js',"export const value=1;")]),/Inline module imports cannot yet be bundled/);
+});
