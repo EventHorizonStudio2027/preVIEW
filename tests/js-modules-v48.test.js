@@ -15,7 +15,8 @@ test('recursively embeds JavaScript module graph and rewrites specifiers',async(
   file('value.js',"export const answer='42';",'src/lib/value.js')
  ];
  const result=await bundleAssets('<script type="module" src="src/main.js"></script>',files);
- assert.equal(result.missing.length,0);\n assert.equal(result.bundledFiles,2);
+ assert.equal(result.missing.length,0);
+ assert.equal(result.bundledFiles,2);
  assert.ok(result.html.includes('src="data:text/javascript;base64,'));
  const src=result.html.match(/src="([^"]+)"/)[1];
  const entry=atob(src.split(',')[1]);
