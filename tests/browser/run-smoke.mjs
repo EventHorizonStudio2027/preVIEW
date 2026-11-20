@@ -89,6 +89,16 @@ try {
   const background=await assetPage.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
   if(!background.startsWith('url("data:image/png;base64,'))throw new Error('Bundled CSS image did not resolve');
   await assetPage.close();
+  // Verify that a nested JavaScript module graph executes in the actual exported iframe.
+  const moduleFiles=[
+    {name:'main.js',webkitRelativePath:'src/main.js',size:70,type:'text/javascript',text:async()=>"import {answer} from './lib/value.js'; document.body.dataset.answer=answer;",arrayBuffer:async()=>new TextEncoder().encode("import {answer} from './lib/value.js'; document.body.dataset.answer=answer;").buffer},
+    {name:'value.js',webkitRelativePath:'src/lib/value.js',size:27,type:'text/javascript',text:async()=>"export const answer='42';",arrayBuffer:async()=>new TextEncoder().encode("export const answer='42';").buffer}
+  ];
+  const moduleBundle=await bundleAssets('<!doctype html><html><body><script type="module" src="src/main.js"></script></body></html>',moduleFiles);
+  const modulePage=await browser.newPage();
+  await modulePage.setContent(buildPlayableHtml({name:'Module graph',ctaText:'Play',ctaUrl:'https://example.com'},moduleBundle.html),{waitUntil:'domcontentloaded'});
+  await modulePage.frameLocator('#game').locator('body[data-answer="42"]').waitFor({state:'attached',timeout:10000});
+  await modulePage.close();
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (workspace, demo, exported playable game, Unicode and CTA)');
