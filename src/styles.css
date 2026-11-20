@@ -80,3 +80,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 .nested-preflight-actions .hint{max-width:78ch;text-wrap:pretty}
 #nestedPreflightStatus{font-variant-numeric:tabular-nums}
 @media(max-width:700px){.nested-preflight-actions .hint{max-width:100%}}
+
+/* v4.13 final visual pass: polished readiness accent and gentle interaction */
+.nested-preflight-actions{background:linear-gradient(125deg,#fcfbff 0%,#f3efff 100%);border-color:#d8cdf5}
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions{transition:background-color .2s ease,border-color .2s ease}.nested-preflight-actions:hover{border-color:#b9a5ee}}
