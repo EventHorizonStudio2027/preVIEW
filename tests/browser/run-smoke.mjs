@@ -39,7 +39,7 @@ try {
   if (fixture !== 'PASS') throw new Error(`Model fixture failed: ${fixture}`);
 
   await page.goto(origin + '/index.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-  await page.getByRole('heading', { name: 'Build previews worth playing.' }).waitFor();
+  await page.getByRole('heading', { name: 'Make your game playable in minutes.' }).waitFor();
   await page.locator('[data-step="import"]').waitFor();
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.locator('[data-step="import"]').waitFor();
