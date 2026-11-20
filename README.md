@@ -291,3 +291,11 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Preflight reports unresolved or ambiguous dependencies persistently in the interface and reports the aggregate embedded file size on success.
 - Changing selected asset files invalidates the prior preflight message so stale success cannot be mistaken for a current check.
 - The export path continues to run its own independent bundling and validation; preflight is advisory and does not replace export-time checks.
+
+
+## v4.8 — JavaScript module graph bundling
+- Recursively bundles local static ES module imports, re-exports, and string-literal dynamic imports from selected `.js` and `.mjs` files into standalone data-URL modules.
+- Resolves paths relative to each importing module and rejects project-root traversal, missing/ambiguous modules, non-literal dynamic imports, and circular module graphs rather than silently producing a broken export.
+- Adds a browser-level exported-game fixture that executes an entry module importing a nested module.
+- Review & Export now enables **Check dependencies** for module-based games as well as stylesheet-based games.
+- Limitations: the module reference scanner is heuristic rather than a full JavaScript parser. Runtime `fetch()`, workers, import maps, package/bare specifiers, circular module graphs, and some advanced bundler syntax remain unsupported and must be reviewed manually. A successful check is not a guarantee that arbitrary game runtime dependencies are portable.
