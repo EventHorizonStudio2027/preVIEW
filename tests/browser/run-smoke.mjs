@@ -97,7 +97,7 @@ try {
   const moduleBundle=await bundleAssets('<!doctype html><html><body><script type="module" src="src/main.js"></script></body></html>',moduleFiles);
   const modulePage=await browser.newPage();
   await modulePage.setContent(buildPlayableHtml({name:'Module graph',ctaText:'Play',ctaUrl:'https://example.com'},moduleBundle.html),{waitUntil:'domcontentloaded'});
-  await modulePage.frameLocator('#game').locator('body[data-answer="42"]').waitFor({timeout:10000});
+  await modulePage.frameLocator('#game').locator('body[data-answer="42"]').waitFor({state:'attached',timeout:10000});
   await modulePage.close();
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
