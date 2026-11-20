@@ -141,3 +141,5 @@
 .playable-health[data-level="error"] .bundle-meter::-moz-progress-bar{background:#b42318}
 
 .bundle-capacity-label{font-size:12px;letter-spacing:.01em;color:#6a6578;margin:-6px 0 12px;line-height:1.4}
+
+.asset-selection-note{font-size:12px;line-height:1.5;color:#6551a4;background:#f7f5ff;border-radius:8px;padding:6px 9px;margin:8px 0 4px}
