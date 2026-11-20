@@ -116,5 +116,5 @@ export async function bundleAssets(source,files){
    }
   }
  }
- return {html,matched:replacements.size,missing:[...plan.missing,...plan.ambiguous.map(x=>x+' (ambiguous)')],bytes:totalBytes};
+ return {html,matched:replacements.size,bundledFiles:usedFiles.size,missing:[...plan.missing,...plan.ambiguous.map(x=>x+' (ambiguous)')],bytes:totalBytes};
 }
