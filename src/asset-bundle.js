@@ -30,6 +30,12 @@ const jsLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(
 const jsResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded JavaScript module path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe JavaScript module path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('JavaScript module escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
 export function javascriptModuleDependencies(source,base){return [...new Set(jsModuleRefs(source).map(m=>m[3]||m[5]||m[7]).filter(jsLocal).map(ref=>jsResolve(base,ref)))]}
 export async function bundleAssets(source,files){
+ for(const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
+  if(!/\btype\s*=\s*(['"])module\1/i.test(script[1])||/\bsrc\s*=/i.test(script[1]))continue;
+  const body=script[2];
+  if(/\bimport\s*\(\s*(?!['"])/.test(body))throw Error('Inline module contains a non-literal dynamic import and cannot be bundled safely.');
+  if(jsModuleRefs(body).some(match=>jsLocal(match[3]||match[5]||match[7])))throw Error('Inline module imports cannot yet be bundled. Move the module into a selected .js or .mjs file and reference it with a script src.');
+ }
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
  const replacements=new Map(),encodedFiles=new Map(),pendingCss=new Set(),pendingJs=new Set(),usedFiles=new Set();
