@@ -12,16 +12,16 @@ test('fails safely on circular CSS imports',async()=>{await assert.rejects(bundl
 test('CSS bundling does not rewrite unrelated quoted text',async()=>{
  const css='a::before{content:"hero.png"}a{background:url(hero.png)}';
  const r=await bundleAssets('<link href="main.css" rel="stylesheet">',[file('main.css',css),file('hero.png','123')]);
- const encoded=r.html.match(/data:text\\/css;base64,([^"']+)/)[1];
+ const encoded=r.html.match(/data:text\/css;base64,([^"']+)/)[1];
  const rewritten=atob(encoded);
- assert.match(rewritten,/content:"hero\\.png"/);
- assert.match(rewritten,/background:url\\(data:image\\/png;base64,/);
+ assert.match(rewritten,/content:"hero\.png"/);
+ assert.match(rewritten,/background:url\(data:image\/png;base64,/);
 });
 
 test('CSS bundling handles repeated references without touching plain text',async()=>{
  const css='a{background:url(hero.png)}b{background:url(hero.png)}c::before{content:"hero.png"}';
  const r=await bundleAssets('<link href="main.css">',[file('main.css',css),file('hero.png','123')]);
- const rewritten=atob(r.html.match(/data:text\\/css;base64,([^"']+)/)[1]);
- assert.equal((rewritten.match(/data:image\\/png;base64,/g)||[]).length,2);
- assert.match(rewritten,/content:"hero\\.png"/);
+ const rewritten=atob(r.html.match(/data:text\/css;base64,([^"']+)/)[1]);
+ assert.equal((rewritten.match(/data:image\/png;base64,/g)||[]).length,2);
+ assert.match(rewritten,/content:"hero\.png"/);
 });
