@@ -40,8 +40,10 @@ const jsModuleRefs=source=>{
  return [...new Map(found.map(item=>[item.start,item])).values()].sort((a,b)=>a.start-b.start);
 };
 const jsLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
+const jsExternal=ref=>/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
+const validateModuleRef=(ref,base)=>{if(ref.startsWith('#')||(!ref.startsWith('./')&&!ref.startsWith('../')&&!jsExternal(ref)))throw Error('Unsupported bare JavaScript module specifier in '+base+': '+ref+'. Use a relative .js/.mjs path; import maps and package names are not portable yet.');};
 const jsResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded JavaScript module path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe JavaScript module path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('JavaScript module escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
-export function javascriptModuleDependencies(source,base){return [...new Set(jsModuleRefs(source).map(m=>m.ref).filter(jsLocal).map(ref=>jsResolve(base,ref)))]}
+export function javascriptModuleDependencies(source,base){return [...new Set(jsModuleRefs(source).map(m=>{validateModuleRef(m.ref,base);return m.ref}).filter(jsLocal).map(ref=>jsResolve(base,ref)))]}
 export async function bundleAssets(source,files){
  for(const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
   if(!/\btype\s*=\s*(['"])module\1/i.test(script[1])||/\bsrc\s*=/i.test(script[1]))continue;
@@ -81,6 +83,7 @@ export async function bundleAssets(source,files){
     const refs=jsModuleRefs(js);
     for(const match of [...refs].reverse()){
      const ref=match.ref;
+     validateModuleRef(ref,path);
      if(!jsLocal(ref))continue;
      const dep=jsResolve(path,ref),depFile=resolveFile(dep,'JavaScript');
      if(!/\.(?:m?js)$/i.test(dep))throw Error('JavaScript module import must resolve to a .js or .mjs file: '+dep);
