@@ -128,3 +128,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* Phase 2 final visual polish: a crisp, restrained lavender accent on the hero */
 #overview .hero{border:1px solid #a994ff45;box-shadow:0 16px 44px #49348c14}
 @media(prefers-reduced-motion:no-preference){#overview .hero .light-button{transition:transform .18s ease,box-shadow .18s ease}#overview .hero .light-button:hover{transform:translateY(-2px);box-shadow:0 8px 22px #241b4520}}
+
+/* v5.1 final polish: coherent review headings and better scanning */
+#publish .panel h2{letter-spacing:-.018em;line-height:1.25}
+#publish .panel:focus-within{border-color:#a994ff80}
+@media(prefers-reduced-motion:no-preference){#publish .panel{transition:border-color .18s ease}}
