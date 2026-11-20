@@ -276,3 +276,11 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Deduplicate identical File objects when computing ambiguous matches while still flagging genuinely distinct files with identical paths.
 - Display a compact selected-file summary in the white/lavender export health panel.
 - Add six regression tests. Nested CSS and dynamic JavaScript bundling remain open.
+
+## v4.6 — Nested stylesheet asset export
+- Recursively embed locally selected CSS imports and CSS url() resources as data URLs in standalone exports.
+- Resolve relative parent-folder paths within the selected project; reject traversal beyond the project root.
+- Fail export with explicit errors for missing or ambiguous nested dependencies and circular imports.
+- Include nested dependencies in the 30 MB preflight limit at export time.
+- Surface a compact stylesheet-dependency status note in export health and add six regression tests.
+- JavaScript module graphs, dynamic fetch, and workers remain unsupported; CSS preflight runs at export time, not during synchronous UI readiness.
