@@ -102,3 +102,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v4.15 final visual touch: elegant status underline and smooth focus contrast */
 #nestedPreflightStatus{border-left:3px solid #b8a5ec;padding-left:10px}
 .nested-preflight-actions:focus-within{box-shadow:0 0 0 2px #7958e81c,0 10px 28px #4c3b8520}
+
+/* v4.16 interface: status clarity for nested asset checks */
+#nestedPreflightStatus{letter-spacing:.005em}
+.nested-preflight-actions .hint{line-height:1.6}
