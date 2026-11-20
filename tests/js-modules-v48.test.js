@@ -53,3 +53,16 @@ test('rejects import-map aliases and preserves explicit relative module paths',(
 test('remote module URLs are not mistaken for local files',()=>{
  assert.deepEqual(javascriptModuleDependencies("import 'https://cdn.example.com/lib.js';",'main.js'),[]);
 });
+
+
+test('ignores commented-out imports without missing-asset false alarms',async()=>{
+ const code=`// import './missing.js';\n/* export {bad} from './absent.mjs'; */\nimport './real.js';`;
+ assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
+ const result=await bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',code),file('real.js','export const ok=true;')]);
+ assert.equal(result.bundledFiles,2);
+});
+
+test('comment markers inside a quoted string do not hide subsequent imports',()=>{
+ const code=`const url='https://example.org/path';\nimport './real.js';`;
+ assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
+});

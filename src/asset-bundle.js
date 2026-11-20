@@ -25,6 +25,20 @@ const cssRefs=css=>[...css.matchAll(/url\(\s*(?:["']([^"']+)["']|([^\s)]+))\s*\)
 const cssLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
 const cssResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded CSS asset path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe CSS asset path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('CSS asset escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
 export function stylesheetDependencies(css,base){return [...new Set(cssRefs(css).filter(cssLocal).map(ref=>cssResolve(base,ref)))]}
+// Preserve character offsets while hiding comments from import discovery.
+// Quoted strings are left intact so actual module specifiers retain their offsets.
+const maskJsComments=source=>{
+ let out='',i=0,quote=null;
+ while(i<source.length){
+  const c=source[i],next=source[i+1];
+  if(quote){out+=c;i++;if(c==='\\'&&i<source.length){out+=source[i++];continue}if(c===quote)quote=null;continue}
+  if(c==='"'||c==="'"||c==='\x60'){quote=c;out+=c;i++;continue}
+  if(c==='/'&&next==='/'){out+='  ';i+=2;while(i<source.length&&source[i]!=='\n'&&source[i]!=='\r'){out+=' ';i++}continue}
+  if(c==='/'&&next==='*'){out+='  ';i+=2;while(i<source.length){if(source[i]==='*'&&source[i+1]==='/'){out+='  ';i+=2;break}out+=source[i]==='\n'||source[i]==='\r'?source[i]:' ';i++}continue}
+  out+=c;i++;
+ }
+ return out;
+};
 const jsModuleRefs=source=>{
  const found=[];
  const patterns=[
@@ -33,7 +47,7 @@ const jsModuleRefs=source=>{
   /\bexport\s+(?:\*|\{[\s\S]*?\})\s+from\s*(['"])([^'"]+)\1/g,
   /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/g
  ];
- for(const pattern of patterns)for(const match of source.matchAll(pattern)){
+ for(const pattern of patterns)for(const match of maskJsComments(source).matchAll(pattern)){
   const ref=match[2],offset=match.index+match[0].lastIndexOf(ref);
   found.push({ref,start:offset});
  }
