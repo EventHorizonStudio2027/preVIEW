@@ -28,11 +28,12 @@ export function stylesheetDependencies(css,base){return [...new Set(cssRefs(css)
 export async function bundleAssets(source,files){
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
- const replacements=new Map(),encodedFiles=new Map(),visitedCss=new Set(),pendingCss=new Set();
+ const replacements=new Map(),encodedFiles=new Map(),visitedCss=new Set(),pendingCss=new Set(),usedFiles=new Set();
  const available=new Map();for(const file of files){const p=safePath(file.webkitRelativePath||file.name);if(p){const group=available.get(p)||[];group.push(file);available.set(p,[...new Set(group)])}}
  const resolveFile=path=>{const exact=available.get(path)||[];const suffix=[...available.keys()].filter(k=>k.endsWith('/'+path)).flatMap(k=>available.get(k));const found=[...new Set(exact.length?exact:suffix)];if(found.length!==1)throw Error(found.length?'Ambiguous CSS asset: '+path:'Missing CSS asset: '+path);return found[0]};
  const readFile=async file=>{if(encodedFiles.has(file))return encodedFiles.get(file);const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);if(arr.byteLength>MAX_BUNDLE_BYTES)throw Error('Asset exceeds the 30 MB bundle limit.');let raw='';for(let i=0;i<arr.length;i+=8192)raw+=String.fromCharCode(...arr.subarray(i,i+8192));const encoded=btoa(raw);encodedFiles.set(file,encoded);return encoded};
  const makeData=async(path,file)=>{
+  usedFiles.add(file);
   if(!/\\.css$/i.test(path))return 'data:'+assetMimeType(file,path)+';base64,'+await readFile(file);
   if(pendingCss.has(path))throw Error('Circular stylesheet import: '+path);
   pendingCss.add(path);visitedCss.add(path);
@@ -48,7 +49,7 @@ export async function bundleAssets(source,files){
   }finally{pendingCss.delete(path)}
  };
  for(const [path,file] of plan.matches)replacements.set(path,await makeData(path,file));
- const totalBytes=[...new Set([...plan.matches.values(),...visitedCss].map(x=>typeof x==='string'?resolveFile(x):x))].reduce((sum,file)=>sum+file.size,0);
+ const totalBytes=[...usedFiles].reduce((sum,file)=>sum+file.size,0);
  if(totalBytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
  let html=source;
  for(const [path,data] of replacements){
