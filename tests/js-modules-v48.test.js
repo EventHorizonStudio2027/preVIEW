@@ -66,3 +66,21 @@ test('comment markers inside a quoted string do not hide subsequent imports',()=
  const code=`const url='https://example.org/path';\nimport './real.js';`;
  assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
 });
+
+
+test('module-like text in ordinary strings is not a dependency',async()=>{
+ const code=`const help = "import './ghost.js'"; const snippet = 'export {x} from "./fake.js"'; import './real.js';`;
+ assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
+ const bundled=await bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',code),file('real.js','export const ok=true;')]);
+ assert.equal(bundled.bundledFiles,2);
+});
+
+test('dynamic-import-looking text in comments and strings does not fail the export',async()=>{
+ const code=`// import(variable);\nconst hint = "import(variable)"; /* import(missing); */ export const ok=true;`;
+ const bundled=await bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',code)]);
+ assert.equal(bundled.bundledFiles,1);
+});
+
+test('real variable dynamic imports still fail closed',async()=>{
+ await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js','import(getName());')]),/Non-literal dynamic import/);
+});
