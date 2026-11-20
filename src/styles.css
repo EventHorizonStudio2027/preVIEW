@@ -89,3 +89,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 .nested-preflight-actions{row-gap:10px}
 .nested-preflight-actions button{font-weight:700;white-space:normal;text-wrap:balance}
 @media(max-width:700px){.nested-preflight-actions{padding:14px;border-radius:14px}}
+
+/* v4.14 final visual finishing touch: polished focus and hover for review controls */
+.nested-preflight-actions button:focus-visible{box-shadow:0 0 0 5px #7958e825}
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions button:hover:not(:disabled){filter:brightness(1.035)}}
