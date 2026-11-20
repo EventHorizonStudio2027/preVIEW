@@ -23,3 +23,15 @@ test('playable export handler blocks ambiguous and oversized assets',()=>{
  const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
  assert.match(app,/if\(plan\.overLimit\|\|plan\.ambiguous\.length\)/);
 });
+
+test('playable export prevents duplicate simultaneous downloads',()=>{
+ const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.match(app,/if\(playableExportBusy\)return/);
+ assert.match(app,/playableExportBusy=true/);
+ assert.match(app,/finally\{playableExportBusy=false/);
+});
+test('playable export shows preparation state and restores label',()=>{
+ const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.match(app,/Preparing playable file…/);
+ assert.match(app,/exportButton\.textContent='Download playable HTML'/);
+});
