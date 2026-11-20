@@ -25,3 +25,15 @@ test('CSS bundling handles repeated references without touching plain text',asyn
  assert.equal((rewritten.match(/data:image\/png;base64,/g)||[]).length,2);
  assert.match(rewritten,/content:"hero\.png"/);
 });
+
+test('CSS comments do not request missing assets',async()=>{
+ const css='/* background:url(missing.png) */ a{background:url(hero.png)}';
+ const r=await bundleAssets('<link href="main.css">',[file('main.css',css),file('hero.png','123')]);
+ assert.equal(r.bundledFiles,2);
+});
+
+test('CSS comments do not create false circular imports',async()=>{
+ const css='/* @import "main.css"; */ a{color:red}';
+ const r=await bundleAssets('<link href="main.css">',[file('main.css',css)]);
+ assert.equal(r.bundledFiles,1);
+});
