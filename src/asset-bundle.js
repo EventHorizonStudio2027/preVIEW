@@ -15,12 +15,13 @@ export function planAssets(source,files){
   if(!candidates.length){missing.push(path);continue}
   matches.set(path,candidates[0]);
  }
- const bytes=[...matches.values()].reduce((total,file)=>total+file.size,0);
+ const bytes=[...new Set(matches.values())].reduce((total,file)=>total+file.size,0);
  return {matches,missing,ambiguous,bytes,requested:paths.length,overLimit:bytes>MAX_BUNDLE_BYTES};
 }
 export async function bundleAssets(source,files){
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
+ if(plan.missing.length||plan.ambiguous.length)throw Error('Cannot bundle incomplete assets: '+plan.missing.length+' missing, '+plan.ambiguous.length+' ambiguous.');
  const replacements=new Map();
  for(const [path,file] of plan.matches){
   const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);let raw='';
