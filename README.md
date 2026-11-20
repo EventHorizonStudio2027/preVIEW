@@ -237,3 +237,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Bundle size estimate counts each unique selected file only once, avoiding false oversize warnings.
 - Five regression tests for diagnostics and size accounting.
 - Static asset scanner still does not resolve runtime JavaScript or nested CSS dependencies.
+
+## v4.0 — Static URL compatibility
+- Inline cache-busted and fragment-suffixed quoted asset references without retaining URL query parameters on data URLs.
+- Inline unquoted CSS url() paths and srcset candidates.
+- Improve export checklist microcopy and add four URL regression tests.
+- Dynamic JavaScript and nested external stylesheet dependencies remain unsupported.

@@ -32,8 +32,14 @@ export async function bundleAssets(source,files){
  for(const [path,data] of replacements){
   for(const prefix of ['', './']){
    const target=prefix+path;
-   for(const q of ['"', "'", '('])html=html.replaceAll(q+target+q,q+data+q);
-   html=html.replaceAll('"'+target+' ','"'+data+' ').replaceAll("'"+target+' ',"'"+data+' ');
+   const escapeRegExp=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+   const escaped=escapeRegExp(target);
+   const quoted=new RegExp('(["\\x27])'+escaped+'([?#][^"\\x27\\s]*)?\\1','g');
+   html=html.replace(quoted,(_all,quote,suffix='')=>quote+data+quote);
+   const srcset=new RegExp('(["\\x27,]\\s*)'+escaped+'([?#][^\\s,"\\x27]*)?(\\s+\\d+(?:\\.\\d+)?[wx])','g');
+   html=html.replace(srcset,(_all,lead,suffix='',descriptor)=>lead+data+descriptor);
+   const css=new RegExp('(url\\(\\s*)'+escaped+'([?#][^\\s)]*)?(\\s*\\))','gi');
+   html=html.replace(css,(_all,lead,suffix='',end)=>lead+data+end);
   }
  }
  return {html,matched:replacements.size,missing:[...plan.missing,...plan.ambiguous.map(x=>x+' (ambiguous)')],bytes:plan.bytes};
