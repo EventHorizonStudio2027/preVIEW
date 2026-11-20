@@ -82,7 +82,7 @@ try {
   if(bundled.matched!==1||bundled.missing.length)throw new Error('Asset bundle did not match fixture image');
   await page.setContent(buildPlayableHtml({name:'Asset test',ctaText:'Play',ctaUrl:'https://example.com'},bundled.html),{waitUntil:'domcontentloaded'});
   const image=page.frameLocator('#game').locator('#pixel');
-  await image.waitFor();
+  await image.waitFor({state:'attached'});
   const dimensions=await image.evaluate(async i=>{await i.decode();return {complete:i.complete,width:i.naturalWidth}});
   if(dimensions.width!==1)throw new Error('Bundled image did not render: '+JSON.stringify(dimensions));
   const background=await page.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
