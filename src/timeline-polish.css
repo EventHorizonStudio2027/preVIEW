@@ -139,3 +139,5 @@
 .bundle-meter::-moz-progress-bar{background:#7958e8;border-radius:999px}
 .playable-health[data-level="error"] .bundle-meter::-webkit-progress-value{background:#b42318}
 .playable-health[data-level="error"] .bundle-meter::-moz-progress-bar{background:#b42318}
+
+.bundle-capacity-label{font-size:12px;letter-spacing:.01em;color:#6a6578;margin:-6px 0 12px;line-height:1.4}
