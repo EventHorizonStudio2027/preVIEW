@@ -34,7 +34,7 @@ export async function bundleAssets(source,files){
  const readFile=async file=>{if(encodedFiles.has(file))return encodedFiles.get(file);const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);if(arr.byteLength>MAX_BUNDLE_BYTES)throw Error('Asset exceeds the 30 MB bundle limit.');let raw='';for(let i=0;i<arr.length;i+=8192)raw+=String.fromCharCode(...arr.subarray(i,i+8192));const encoded=btoa(raw);encodedFiles.set(file,encoded);return encoded};
  const makeData=async(path,file)=>{
   usedFiles.add(file);
-  if(!/\\.css$/i.test(path))return 'data:'+assetMimeType(file,path)+';base64,'+await readFile(file);
+  if(!/\.css$/i.test(path))return 'data:'+assetMimeType(file,path)+';base64,'+await readFile(file);
   if(pendingCss.has(path))throw Error('Circular stylesheet import: '+path);
   pendingCss.add(path);visitedCss.add(path);
   try{
