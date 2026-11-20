@@ -119,3 +119,12 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v4.17 final polish: restrained luminous edge on dependency review */
 .nested-preflight-actions{box-shadow:inset 0 1px 0 #ffffffb8,0 8px 22px #473c8a0e}
 @media(prefers-reduced-motion:no-preference){.nested-preflight-actions{transition:border-color .18s ease,box-shadow .18s ease}}
+
+/* Phase 2: focus the first-run path with stronger typographic hierarchy */
+#overview .heading h1{max-width:20ch;letter-spacing:-.035em;line-height:1.08}
+#overview .heading p{max-width:65ch;line-height:1.65}
+#overview .hero h2{max-width:25ch;letter-spacing:-.025em}
+
+/* Phase 2 final visual polish: a crisp, restrained lavender accent on the hero */
+#overview .hero{border:1px solid #a994ff45;box-shadow:0 16px 44px #49348c14}
+@media(prefers-reduced-motion:no-preference){#overview .hero .light-button{transition:transform .18s ease,box-shadow .18s ease}#overview .hero .light-button:hover{transform:translateY(-2px);box-shadow:0 8px 22px #241b4520}}
