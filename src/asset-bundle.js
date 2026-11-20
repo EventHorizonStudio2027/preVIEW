@@ -47,7 +47,7 @@ export async function bundleAssets(source,files){
   if(!/\btype\s*=\s*(['"])module\1/i.test(script[1])||/\bsrc\s*=/i.test(script[1]))continue;
   const body=script[2];
   if(/\bimport\s*\(\s*(?!['"])/.test(body))throw Error('Inline module contains a non-literal dynamic import and cannot be bundled safely.');
-  if(jsModuleRefs(body).some(match=>jsLocal(match[3]||match[5]||match[7])))throw Error('Inline module imports cannot yet be bundled. Move the module into a selected .js or .mjs file and reference it with a script src.');
+  if(jsModuleRefs(body).some(match=>jsLocal(match.ref)))throw Error('Inline module imports cannot yet be bundled. Move the module into a selected .js or .mjs file and reference it with a script src.');
  }
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
