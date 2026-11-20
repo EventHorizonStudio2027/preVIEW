@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bundleAssets,stylesheetDependencies} from '../src/asset-bundle.js';
+const file=(name,content,path='')=>({name,webkitRelativePath:path,size:content.length,type:name.endsWith('.css')?'text/css':'image/png',text:async()=>content,arrayBuffer:async()=>new TextEncoder().encode(content).buffer});
+test('resolves CSS image and relative parent paths',()=>assert.deepEqual(stylesheetDependencies('a{background:url(../img/hero.png)}','css/main.css'),['img/hero.png']));
+test('resolves nested stylesheet imports',()=>assert.deepEqual(stylesheetDependencies('@import "parts/theme.css";','css/main.css'),['css/parts/theme.css']));
+test('rejects CSS paths escaping project root',()=>assert.throws(()=>stylesheetDependencies('a{background:url(../../outside.png)}','css/main.css'),/escapes/));
+test('bundles a CSS file with an image dependency',async()=>{const r=await bundleAssets('<link href="main.css" rel="stylesheet">',[file('main.css','a{background:url(hero.png)}'),file('hero.png','123')]);assert.equal(r.missing.length,0);assert.match(r.html,/data:text\/css;base64,/);const encoded=r.html.match(/data:text\/css;base64,([^"']+)/)[1];assert.match(atob(encoded),/data:image\/png;base64,/);assert.equal(r.bytes,28)});
+test('fails safely on missing nested CSS dependency',async()=>{await assert.rejects(bundleAssets('<link href="main.css">',[file('main.css','a{background:url(missing.png)}')]),/Missing CSS asset/)});
+test('fails safely on circular CSS imports',async()=>{await assert.rejects(bundleAssets('<link href="a.css">',[file('a.css','@import "b.css";'),file('b.css','@import "a.css";')]),/Circular stylesheet/)});
