@@ -48,7 +48,7 @@ test('CSS comment markers inside quoted content do not hide real asset reference
 });
 
 test('CSS escaped quote does not cause comment masking',async()=>{
- const css=String.raw`a::before{content:"quoted \\" /* text */"}a{background:url(hero.png)}`;
+ const css=String.raw`a::before{content:"quoted \" /* text */"}a{background:url(hero.png)}`;
  const r=await bundleAssets('<link href="main.css">',[file('main.css',css),file('hero.png','123')]);
  assert.equal(r.bundledFiles,2);
 });
