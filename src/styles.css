@@ -62,3 +62,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v4.11: dependency review actions align cleanly on wide displays */
 @media(min-width:701px){.nested-preflight-actions{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center}.nested-preflight-actions .hint{min-width:0;max-width:75ch}}
+
+/* v4.12 UI refinement 1: give dependency-check controls deliberate spacing */
+.nested-preflight-actions button{border-radius:10px;letter-spacing:.005em}
+.nested-preflight-actions .hint{font-size:.92rem;line-height:1.5}
+@media(min-width:701px){.nested-preflight-actions{column-gap:18px}}
