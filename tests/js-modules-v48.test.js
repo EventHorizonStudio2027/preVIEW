@@ -42,14 +42,14 @@ test('fails clearly for local imports in inline module scripts',async()=>{
 
 
 test('rejects package-name module imports rather than shipping broken standalone games',async()=>{
- await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',\"import {x} from 'three'; console.log(x);\")]),/Unsupported bare JavaScript module specifier.*three/);
+ await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',"import {x} from 'three'; console.log(x);")]),/Unsupported bare JavaScript module specifier.*three/);
 });
 
 test('rejects import-map aliases and preserves explicit relative module paths',()=>{
- assert.throws(()=>javascriptModuleDependencies(\"import '#engine';\",'main.js'),/Unsupported bare JavaScript module specifier/);
- assert.deepEqual(javascriptModuleDependencies(\"import './engine.mjs';\",'main.js'),['engine.mjs']);
+ assert.throws(()=>javascriptModuleDependencies("import '#engine';",'main.js'),/Unsupported bare JavaScript module specifier/);
+ assert.deepEqual(javascriptModuleDependencies("import './engine.mjs';",'main.js'),['engine.mjs']);
 });
 
 test('remote module URLs are not mistaken for local files',()=>{
- assert.deepEqual(javascriptModuleDependencies(\"import 'https://cdn.example.com/lib.js';\",'main.js'),[]);
+ assert.deepEqual(javascriptModuleDependencies("import 'https://cdn.example.com/lib.js';",'main.js'),[]);
 });
