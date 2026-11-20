@@ -34,7 +34,7 @@ export async function bundleAssets(source,files){
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
  const replacements=new Map(),encodedFiles=new Map(),pendingCss=new Set(),pendingJs=new Set(),usedFiles=new Set();
  const available=new Map();for(const file of files){const p=safePath(file.webkitRelativePath||file.name);if(p){const group=available.get(p)||[];group.push(file);available.set(p,[...new Set(group)])}}
- const resolveFile=path=>{const exact=available.get(path)||[];const suffix=[...available.keys()].filter(k=>k.endsWith('/'+path)).flatMap(k=>available.get(k));const found=[...new Set(exact.length?exact:suffix)];if(found.length!==1)throw Error(found.length?'Ambiguous nested asset: '+path:'Missing nested asset: '+path);return found[0]};
+ const resolveFile=(path,kind='nested')=>{const exact=available.get(path)||[];const suffix=[...available.keys()].filter(k=>k.endsWith('/'+path)).flatMap(k=>available.get(k));const found=[...new Set(exact.length?exact:suffix)];if(found.length!==1)throw Error(found.length?'Ambiguous '+kind+' asset: '+path:'Missing '+kind+' asset: '+path);return found[0]};
  const readFile=async file=>{if(encodedFiles.has(file))return encodedFiles.get(file);const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);if(arr.byteLength>MAX_BUNDLE_BYTES)throw Error('Asset exceeds the 30 MB bundle limit.');let raw='';for(let i=0;i<arr.length;i+=8192)raw+=String.fromCharCode(...arr.subarray(i,i+8192));const encoded=btoa(raw);encodedFiles.set(file,encoded);return encoded};
  const textOf=async file=>typeof file.text==='function'?await file.text():new TextDecoder().decode(await file.arrayBuffer());
  const toBase64=text=>btoa(unescape(encodeURIComponent(text)));
@@ -46,7 +46,7 @@ export async function bundleAssets(source,files){
    try{
     let css=await textOf(file);
     for(const ref of cssRefs(css).filter(cssLocal)){
-     const dep=cssResolve(path,ref),depFile=resolveFile(dep);
+     const dep=cssResolve(path,ref),depFile=resolveFile(dep,'CSS');
      const data=await makeData(dep,depFile);
      css=css.split(ref).join(data);
     }
@@ -63,7 +63,7 @@ export async function bundleAssets(source,files){
     for(const match of [...refs].reverse()){
      const ref=match[3]||match[5]||match[7];
      if(!jsLocal(ref))continue;
-     const dep=jsResolve(path,ref),depFile=resolveFile(dep);
+     const dep=jsResolve(path,ref),depFile=resolveFile(dep,'JavaScript');
      if(!/\.(?:m?js)$/i.test(dep))throw Error('JavaScript module import must resolve to a .js or .mjs file: '+dep);
      const data=await makeData(dep,depFile);
      const offset=match.index+match[0].lastIndexOf(ref);
