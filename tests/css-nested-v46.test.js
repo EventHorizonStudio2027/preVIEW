@@ -37,3 +37,18 @@ test('CSS comments do not create false circular imports',async()=>{
  const r=await bundleAssets('<link href="main.css">',[file('main.css',css)]);
  assert.equal(r.bundledFiles,1);
 });
+
+test('CSS comment markers inside quoted content do not hide real asset references',async()=>{
+ const css='a::before{content:"/* not a comment */"}a{background:url(hero.png)}';
+ const r=await bundleAssets('<link href="main.css">',[file('main.css',css),file('hero.png','123')]);
+ assert.equal(r.bundledFiles,2);
+ const rewritten=atob(r.html.match(/data:text\/css;base64,([^"']+)/)[1]);
+ assert.match(rewritten,/content:"\/\* not a comment \*\/"/);
+ assert.match(rewritten,/data:image\/png;base64,/);
+});
+
+test('CSS escaped quote does not cause comment masking',async()=>{
+ const css=String.raw`a::before{content:"quoted \\" /* text */"}a{background:url(hero.png)}`;
+ const r=await bundleAssets('<link href="main.css">',[file('main.css',css),file('hero.png','123')]);
+ assert.equal(r.bundledFiles,2);
+});
