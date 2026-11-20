@@ -20,6 +20,11 @@ export function planAssets(source,files){
  const bytes=[...new Set(matches.values())].reduce((total,file)=>total+file.size,0);
  return {matches,missing,ambiguous,bytes,requested:paths.length,overLimit:bytes>MAX_BUNDLE_BYTES};
 }
+// Resolve stylesheet dependencies relative to the stylesheet's own directory.
+const cssRefs=css=>[...css.matchAll(/url\\(\\s*(?:["']([^"']+)["']|([^\\s)]+))\\s*\\)|@import\\s+["']([^"']+)["']/gi)].map(m=>m[1]||m[2]||m[3]).filter(Boolean);
+const cssLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\\/\\/)/i.test(ref);
+const cssResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded CSS asset path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\\\'))throw Error('Unsafe CSS asset path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('CSS asset escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
+export function stylesheetDependencies(css,base){return [...new Set(cssRefs(css).filter(cssLocal).map(ref=>cssResolve(base,ref)))]}
 export async function bundleAssets(source,files){
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
