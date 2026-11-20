@@ -93,3 +93,12 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v4.14 final visual finishing touch: polished focus and hover for review controls */
 .nested-preflight-actions button:focus-visible{box-shadow:0 0 0 5px #7958e825}
 @media(prefers-reduced-motion:no-preference){.nested-preflight-actions button:hover:not(:disabled){filter:brightness(1.035)}}
+
+/* v4.15 UI: readable dependency status even for long nested asset names */
+#nestedPreflightStatus{overflow-wrap:anywhere;line-height:1.55}
+.nested-preflight-actions .hint{color:#5c5274}
+@media(max-width:700px){#nestedPreflightStatus{font-size:.93rem}}
+
+/* v4.15 final visual touch: elegant status underline and smooth focus contrast */
+#nestedPreflightStatus{border-left:3px solid #b8a5ec;padding-left:10px}
+.nested-preflight-actions:focus-within{box-shadow:0 0 0 2px #7958e81c,0 10px 28px #4c3b8520}
