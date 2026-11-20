@@ -224,3 +224,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Show matched, missing, ambiguous references and selected asset size before exporting.
 - Reject duplicate paths, clear selections when unloading games, and add five regression tests.
 - Limitations: folder selection depends on browser support; nested CSS, dynamic fetch and module imports remain unsupported; hosted publishing not yet implemented.
+
+## v3.8 — Reliable export gating
+- Playable export is disabled until all detected local assets are uniquely matched.
+- A 30 MB bundle cap is shown in preflight and enforced before file reads.
+- Export handler independently refuses unresolved assets; missing assets cannot be silently shipped.
+- Six regression tests and clearer export copy. Remote assets and dynamic runtime dependencies remain outside current coverage.
