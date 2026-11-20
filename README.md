@@ -250,3 +250,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Add three regression tests for shared image/CSS references and browser coverage.
 - Improve health-panel guidance for creators fixing missing assets.
 - This does not yet cover nested external CSS, module imports or dynamic fetch.
+
+## v4.2 — Correct static asset detection and runtime warnings
+- Fix a conditional-binding bug that could skip ordinary src/href attributes when parsing HTML containing srcset.
+- Flag potential module imports, fetch calls, worker scripts and nested CSS imports as needing manual verification.
+- Display those risks in the export health panel without falsely claiming that the runtime resources are bundled.
+- Add seven regression tests. Static scanning remains heuristic, not exhaustive.

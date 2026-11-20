@@ -22,8 +22,12 @@ function collect(source) {
   for (const match of source.matchAll(tag)) {
     for (const a of match[0].matchAll(attr)) {
       const value=a[1]??a[2]??a[3]??'';
-      if (/^srcset\s*=/i.test(a[0])) for (const part of value.split(',')) values.push(part.trim().split(/\s+/)[0]);
-      else values.push(value);
+      if (/^srcset\s*=/i.test(a[0])) {
+        for (const part of value.split(',')) {
+          const candidate=part.trim().split(/\s+/)[0];
+          if(candidate)values.push(candidate);
+        }
+      } else values.push(value);
     }
   }
   // CSS imports and url() references can also break single-file previews.
@@ -37,11 +41,19 @@ export function inspectHtml(source, filename='game.html') {
   const references=collect(source);
   const counts={local:0,remote:0,unsafe:0};
   for (const ref of references) counts[ref.kind]++;
+  const runtimePatterns=[
+    {name:'JavaScript module imports',pattern:/\b(?:import\s*(?:\(|(?:[\s\S]{0,100}?\sfrom\s*)?["'])|export\s+(?:\*|\{)[\s\S]{0,100}?\sfrom\s*["'])/g},
+    {name:'Runtime fetch requests',pattern:/\bfetch\s*\(/g},
+    {name:'Worker scripts',pattern:/\bnew\s+(?:Shared)?Worker\s*\(/g},
+    {name:'Nested stylesheet imports',pattern:/@import\s+/gi}
+  ];
+  const runtimeDependencies=runtimePatterns.filter(({pattern})=>pattern.test(source)).map(({name})=>name);
   const sdkDetected=/\bpreVIEW\s*\.\s*register\s*\(/.test(source);
   return {
     compatible:counts.unsafe===0 && counts.local===0,
     canImport:counts.unsafe===0,
     sdkDetected,
+    runtimeDependencies,
     references:references.slice(0,MAX_REPORT),
     totalReferences:references.length,
     counts,
@@ -49,6 +61,7 @@ export function inspectHtml(source, filename='game.html') {
       ...(counts.local?[`${counts.local} local asset reference(s) may fail when importing one HTML file.`]:[]),
       ...(counts.unsafe?[`${counts.unsafe} unsafe asset reference(s) detected.`]:[]),
       ...(counts.remote?['Remote assets depend on network access and third-party availability.']:[]),
+      ...(runtimeDependencies.length?['Potential runtime dependencies need manual verification: '+runtimeDependencies.join(', ')+'.']:[]),
       ...(!sdkDetected?['No preVIEW checkpoint SDK registration detected; checkpoint playback may be unavailable.']:[])
     ]
   };

@@ -7,7 +7,7 @@ export function playableDiagnostics(sourceHtml){
  if(!sourceHtml)return {available:false,local:0,remote:0,unsafe:0,bytes:0,portable:false};
  const inspection=inspectHtml(sourceHtml,'game.html');
  const bytes=new TextEncoder().encode(sourceHtml).length;
- return {available:true,...inspection.counts,bytes,portable:inspection.counts.local===0&&inspection.counts.unsafe===0};
+ return {available:true,...inspection.counts,bytes,runtimeDependencies:inspection.runtimeDependencies,portable:inspection.counts.local===0&&inspection.counts.unsafe===0};
 }
 export function buildPlayableHtml(project,sourceHtml){
  if(typeof sourceHtml!=='string'||!sourceHtml.trim())throw Error('Import a game HTML file before exporting a playable preview.');
