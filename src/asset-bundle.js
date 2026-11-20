@@ -100,10 +100,15 @@ export async function bundleAssets(source,files){
    pendingCss.add(path);
    try{
     let css=await textOf(file);
-    for(const ref of cssRefs(css).filter(cssLocal)){
+    // Replace only the matched CSS reference, not unrelated string literals or comments.
+    const cssMatches=[...css.matchAll(/url\\(\\s*(?:["']([^"']+)["']|([^\\s)]+))\\s*\\)|@import\\s+["']([^"']+)["']/gi)];
+    for(const match of cssMatches.reverse()){
+     const ref=match[1]||match[2]||match[3];
+     if(!cssLocal(ref))continue;
      const dep=cssResolve(path,ref),depFile=resolveFile(dep,'CSS');
      const data=await makeData(dep,depFile);
-     css=css.split(ref).join(data);
+     const rewritten=match[0].replace(ref,data);
+     css=css.slice(0,match.index)+rewritten+css.slice(match.index+match[0].length);
     }
     return 'data:text/css;base64,'+toBase64(css);
    }finally{pendingCss.delete(path)}
