@@ -67,3 +67,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 .nested-preflight-actions button{border-radius:10px;letter-spacing:.005em}
 .nested-preflight-actions .hint{font-size:.92rem;line-height:1.5}
 @media(min-width:701px){.nested-preflight-actions{column-gap:18px}}
+
+/* v4.12 final visual finishing touch: subtle interactive depth, accessible motion */
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions button{transition:transform .16s ease,box-shadow .16s ease}.nested-preflight-actions button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 14px #473c8a24}.nested-preflight-actions button:active:not(:disabled){transform:translateY(0)}}
