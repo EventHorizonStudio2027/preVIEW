@@ -31,10 +31,10 @@ const maskJsComments=source=>{
  let out='',i=0,quote=null;
  while(i<source.length){
   const c=source[i],next=source[i+1];
-  if(quote){out+=c;i++;if(c==='\\\\'&&i<source.length){out+=source[i++];continue}if(c===quote)quote=null;continue}
+  if(quote){out+=c;i++;if(c==='\\'&&i<source.length){out+=source[i++];continue}if(c===quote)quote=null;continue}
   if(c==='"'||c==="'"||c==='\x60'){quote=c;out+=c;i++;continue}
-  if(c==='/'&&next==='/'){out+='  ';i+=2;while(i<source.length&&source[i]!=='\\n'&&source[i]!=='\\r'){out+=' ';i++}continue}
-  if(c==='/'&&next==='*'){out+='  ';i+=2;while(i<source.length){if(source[i]==='*'&&source[i+1]==='/'){out+='  ';i+=2;break}out+=source[i]==='\\n'||source[i]==='\\r'?source[i]:' ';i++}continue}
+  if(c==='/'&&next==='/'){out+='  ';i+=2;while(i<source.length&&source[i]!=='\n'&&source[i]!=='\r'){out+=' ';i++}continue}
+  if(c==='/'&&next==='*'){out+='  ';i+=2;while(i<source.length){if(source[i]==='*'&&source[i+1]==='/'){out+='  ';i+=2;break}out+=source[i]==='\n'||source[i]==='\r'?source[i]:' ';i++}continue}
   out+=c;i++;
  }
  return out;
