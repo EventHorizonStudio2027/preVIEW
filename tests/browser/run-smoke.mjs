@@ -83,10 +83,8 @@ try {
   await page.setContent(buildPlayableHtml({name:'Asset test',ctaText:'Play',ctaUrl:'https://example.com'},bundled.html),{waitUntil:'domcontentloaded'});
   const image=page.frameLocator('#game').locator('#pixel');
   await image.waitFor();
-  await page.waitForFunction(()=>{const i=document.querySelector('#game')?.contentDocument?.querySelector('#pixel');return i?.complete&&i?.naturalWidth===1;}).catch(async()=>{
-    const dimensions=await image.evaluate(i=>({complete:i.complete,width:i.naturalWidth}));
-    if(dimensions.width!==1)throw new Error('Bundled image did not render: '+JSON.stringify(dimensions));
-  });
+  const dimensions=await image.evaluate(async i=>{await i.decode();return {complete:i.complete,width:i.naturalWidth}});
+  if(dimensions.width!==1)throw new Error('Bundled image did not render: '+JSON.stringify(dimensions));
   const background=await page.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
   if(!background.startsWith('url("data:image/png;base64,'))throw new Error('Bundled CSS image did not resolve');
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
