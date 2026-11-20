@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {inspectHtml} from '../src/import-check.js';
+import {assetPaths,planAssets} from '../src/asset-bundle.js';
+import {playableDiagnostics} from '../src/playable-export.js';
+test('collects ordinary src and href alongside srcset',()=>{const html='<img src="hero.png" srcset="small.png 1x, big.png 2x"><script src="game.js"></script><link href="theme.css">';assert.deepEqual(new Set(assetPaths(html)),new Set(['hero.png','small.png','big.png','game.js','theme.css']))});
+test('collects single non-srcset attribute',()=>assert.deepEqual(assetPaths('<img src="hero.png">'),['hero.png']));
+test('missing ordinary src cannot be hidden by srcset',()=>{const p=planAssets('<img src="hero.png" srcset="small.png 1x">',[]);assert.deepEqual(new Set(p.missing),new Set(['hero.png','small.png']))});
+test('detects dynamic imports and fetch without treating them as static files',()=>{const d=inspectHtml('<script type="module">import("./game.js"); fetch("/assets/map.json")</script>');assert.ok(d.runtimeDependencies.includes('JavaScript module imports'));assert.ok(d.runtimeDependencies.includes('Runtime fetch requests'))});
+test('detects stylesheet imports and workers',()=>{const d=inspectHtml('<style>@import "base.css";</style><script>new Worker("worker.js")</script>');assert.ok(d.runtimeDependencies.includes('Nested stylesheet imports'));assert.ok(d.runtimeDependencies.includes('Worker scripts'))});
+test('export health reports potential runtime dependencies',()=>{const d=playableDiagnostics('<script>fetch("data.json")</script>');assert.ok(d.runtimeDependencies.includes('Runtime fetch requests'))});
+test('plain HTML does not generate runtime warnings',()=>assert.deepEqual(inspectHtml('<p>Hello</p>').runtimeDependencies,[]));
