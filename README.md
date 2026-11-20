@@ -230,3 +230,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - A 30 MB bundle cap is shown in preflight and enforced before file reads.
 - Export handler independently refuses unresolved assets; missing assets cannot be silently shipped.
 - Six regression tests and clearer export copy. Remote assets and dynamic runtime dependencies remain outside current coverage.
+
+## v3.9 — Actionable export health
+- Export health panel shows actual missing filenames and ambiguous matches instead of generic counts.
+- Remote dependency warning explicitly states internet is required.
+- Bundle size estimate counts each unique selected file only once, avoiding false oversize warnings.
+- Five regression tests for diagnostics and size accounting.
+- Static asset scanner still does not resolve runtime JavaScript or nested CSS dependencies.

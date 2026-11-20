@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {planAssets} from '../src/asset-bundle.js';
+const file=(path,size)=>({name:path.split('/').at(-1),webkitRelativePath:path,size});
+test('preflight does not double-count same file used in multiple paths',()=>{const p=planAssets('<img src="hero.png"><img src="game/hero.png">',[file('game/hero.png',4096)]);assert.equal(p.matches.size,2);assert.equal(p.bytes,4096)});
+test('preflight lists exact missing asset names',()=>{const p=planAssets('<img src="a.png"><img src="b.png">',[]);assert.deepEqual(p.missing,['a.png','b.png'])});
+test('preflight keeps ambiguous paths separate from missing',()=>{const p=planAssets('<img src="hero.png">',[file('one/hero.png',10),file('two/hero.png',10)]);assert.deepEqual(p.ambiguous,['hero.png']);assert.equal(p.missing.length,0)});
+test('export health shows actionable missing names',()=>{const s=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(s,/Missing: /);assert.match(s,/Duplicate matches: /)});
+test('export health warns about remote dependencies',()=>{const s=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');assert.match(s,/remote reference\(s\) still require an internet connection/)});

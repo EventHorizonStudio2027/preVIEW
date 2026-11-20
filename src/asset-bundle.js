@@ -15,7 +15,7 @@ export function planAssets(source,files){
   if(!candidates.length){missing.push(path);continue}
   matches.set(path,candidates[0]);
  }
- const bytes=[...matches.values()].reduce((total,file)=>total+file.size,0);
+ const bytes=[...new Set(matches.values())].reduce((total,file)=>total+file.size,0);
  return {matches,missing,ambiguous,bytes,requested:paths.length,overLimit:bytes>MAX_BUNDLE_BYTES};
 }
 export async function bundleAssets(source,files){
