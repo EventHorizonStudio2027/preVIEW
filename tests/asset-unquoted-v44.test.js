@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {bundleAssets,planAssets} from '../src/asset-bundle.js';
+const file=(name)=>({name,size:3,type:'image/png',arrayBuffer:async()=>new Uint8Array([1,2,3]).buffer});
+test('unquoted img src is embedded',async()=>{const r=await bundleAssets('<img src=hero.png>',[file('hero.png')]);assert.match(r.html,/src=data:image\/png;base64,/);assert.equal(r.matched,1)});
+test('unquoted asset query and fragment are removed',async()=>{const r=await bundleAssets('<img src=hero.png?v=2#preview>',[file('hero.png')]);assert.match(r.html,/src=data:image\/png;base64,/);assert.doesNotMatch(r.html,/v=2#preview/)});
+test('unquoted script src is embedded with MIME fallback',async()=>{const f={...file('app.js'),type:''};const r=await bundleAssets('<script src=app.js></script>',[f]);assert.match(r.html,/src=data:text\/javascript;base64,/)});
+test('unquoted link href is embedded',async()=>{const r=await bundleAssets('<link rel=stylesheet href=theme.css>',[{...file('theme.css'),type:''}]);assert.match(r.html,/href=data:text\/css;base64,/)});
+test('unquoted poster is embedded',async()=>{const r=await bundleAssets('<video poster=hero.png></video>',[file('hero.png')]);assert.match(r.html,/poster=data:image\/png;base64,/)});
+test('unquoted references appear in preflight',()=>{const p=planAssets('<img src=hero.png>',[file('hero.png')]);assert.equal(p.matches.size,1);assert.deepEqual(p.missing,[])});

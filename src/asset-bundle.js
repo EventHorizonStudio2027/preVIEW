@@ -39,6 +39,10 @@ export async function bundleAssets(source,files){
    html=html.replace(quoted,(_all,quote,suffix='')=>quote+data+quote);
    const srcset=new RegExp('(["\\x27,]\\s*)'+escaped+'([?#][^\\s,"\\x27]*)?(\\s+\\d+(?:\\.\\d+)?[wx])','g');
    html=html.replace(srcset,(_all,lead,suffix='',descriptor)=>lead+data+descriptor);
+   // Unquoted HTML references were detected by import-check but previously left unchanged.
+   // Restrict replacements to asset-bearing attributes rather than arbitrary text.
+   const unquoted=new RegExp('(\\b(?:src|href|poster|data)\\s*=\\s*)'+escaped+'([?#][^\\s>"\\x27]*)?(?=[\\s>])','gi');
+   html=html.replace(unquoted,(_all,lead)=>lead+data);
    const css=new RegExp('(url\\(\\s*)'+escaped+'([?#][^\\s)]*)?(\\s*\\))','gi');
    html=html.replace(css,(_all,lead,suffix='',end)=>lead+data+end);
   }
