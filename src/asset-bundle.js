@@ -45,8 +45,8 @@ const maskJsStrings=source=>{
  while(i<source.length){
   const c=source[i];
   if(quote){
-   if(c==='\\\\'&&i+1<source.length){out+='  ';i+=2;continue}
-   if(c===quote){out+=c;quote=null}else out+=c==='\\n'||c==='\\r'?c:' ';
+   if(c==='\\'&&i+1<source.length){out+='  ';i+=2;continue}
+   if(c===quote){out+=c;quote=null}else out+=c==='\n'||c==='\r'?c:' ';
    i++;continue;
   }
   if(c==='"'||c==="'"||c==='\x60'){quote=c;out+=c;i++;continue}
@@ -54,7 +54,7 @@ const maskJsStrings=source=>{
  }
  return out;
 };
-const hasDynamicImport=source=>/\\bimport\\s*\\(\\s*(?!['"])/.test(maskJsStrings(maskJsComments(source)));
+const hasDynamicImport=source=>/\bimport\s*\(\s*(?!['"])/.test(maskJsStrings(maskJsComments(source)));
 const jsModuleRefs=source=>{
  const found=[];
  const patterns=[
@@ -65,7 +65,7 @@ const jsModuleRefs=source=>{
  ];
  const code=maskJsComments(source),keywords=maskJsStrings(code);
  for(const pattern of patterns)for(const match of code.matchAll(pattern)){
-  if(!/\\b(?:import|export)\\b/.test(keywords.slice(match.index,match.index+7)))continue;
+  if(!/\b(?:import|export)\b/.test(keywords.slice(match.index,match.index+7)))continue;
   const ref=match[2],offset=match.index+match[0].lastIndexOf(ref);
   found.push({ref,start:offset});
  }
