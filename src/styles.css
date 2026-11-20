@@ -43,3 +43,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 #nestedPreflightStatus[data-level="ready"]{color:#237A52}
 #nestedPreflightStatus[data-level="error"]{color:#B54747}
 @media(max-width:700px){.nested-preflight-actions{display:grid;grid-template-columns:1fr}.nested-preflight-actions button{width:100%}}
+
+/* v4.9: quieter, more legible dependency review on desktop and mobile */
+.nested-preflight-actions{align-items:center;gap:12px;padding:12px 14px;background:linear-gradient(115deg,#faf8ff,#f5f1ff);border-color:#ded5fa;box-shadow:0 3px 12px #7958e80a}
+.nested-preflight-actions .hint{line-height:1.45;overflow-wrap:anywhere}
+.nested-preflight-actions button{min-height:40px}
+#nestedPreflightStatus[data-level="ready"]{font-weight:650}
+#nestedPreflightStatus[data-level="error"]{font-weight:650}
+.nested-preflight-actions:focus-within{border-color:#aa92ed}
+@media(max-width:700px){.nested-preflight-actions{gap:9px;padding:12px}.nested-preflight-actions .hint{min-width:0;margin:0}}
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions{transition:border-color .18s ease,box-shadow .18s ease}.nested-preflight-actions:focus-within{box-shadow:0 0 0 3px #7958e81a}}

@@ -24,3 +24,17 @@ test('changing selected assets invalidates stale preflight feedback',()=>{
   assert.match(app,/Selected files changed\. Run preflight again before exporting\./);
   assert.match(styles,/nested-preflight-actions/);
 });
+
+
+test('dependency review remains keyboard legible and responsive',()=>{
+  assert.match(styles,/\.nested-preflight-actions:focus-within/);
+  assert.match(styles,/@media\(max-width:700px\)\{\.nested-preflight-actions/);
+  assert.match(styles, /prefers-reduced-motion:no-preference/);
+});
+
+test('manual recovery Pages workflow does not race native push deployment',async()=>{
+  const workflow=await readFile(new URL('../.github/workflows/pages.yml',import.meta.url),'utf8');
+  assert.match(workflow,/workflow_dispatch:/);
+  assert.doesNotMatch(workflow,/^  push:/m);
+  assert.match(workflow,/actions\/deploy-pages@v4/);
+});

@@ -1,7 +1,8 @@
 name: Publish preVIEW demo to GitHub Pages
 on:
-  push:
-    branches: [main]
+  # GitHub Pages already publishes main through its native build workflow.
+  # Keep this explicit deploy path available for manual recovery without
+  # racing the automatic Pages deployment for the same commit.
   workflow_dispatch:
 permissions:
   contents: read
