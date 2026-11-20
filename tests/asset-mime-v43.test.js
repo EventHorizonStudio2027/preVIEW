@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {assetMimeType,bundleAssets,MAX_BUNDLE_BYTES} from '../src/asset-bundle.js';
+const make=(name,bytes,type='')=>({name,size:bytes.length,type,arrayBuffer:async()=>Uint8Array.from(bytes).buffer});
+test('infers executable JavaScript MIME when browser supplies no type',()=>assert.equal(assetMimeType({type:''},'game.js'),'text/javascript'));
+test('infers CSS, JSON, WASM and font MIME types',()=>{for(const [p,t] of [['theme.css','text/css'],['level.json','application/json'],['engine.wasm','application/wasm'],['font.woff2','font/woff2']])assert.equal(assetMimeType({type:''},p),t)});
+test('preserves explicitly supplied MIME',()=>assert.equal(assetMimeType({type:'image/avif'},'hero.png'),'image/avif'));
+test('inlines JavaScript with executable MIME when type is missing',async()=>{const r=await bundleAssets('<script src="game.js"></script>',[make('game.js',[99,111,110,115,111,108,101])]);assert.match(r.html,/src="data:text\/javascript;base64,/)});
+test('same file used by two references is only read once',async()=>{let reads=0;const f={name:'a.png',webkitRelativePath:'game/a.png',size:2,type:'image/png',arrayBuffer:async()=>{reads++;return Uint8Array.from([1,2]).buffer}};const r=await bundleAssets('<img src="a.png"><img src="game/a.png">',[f]);assert.equal(r.matched,2);assert.equal(reads,1)});
+test('rejects oversized actual buffers despite incorrect file metadata',async()=>{const f={name:'big.bin',size:1,type:'',arrayBuffer:async()=>new ArrayBuffer(MAX_BUNDLE_BYTES+1)};await assert.rejects(bundleAssets('<link href="big.bin">',[f]),/30 MB/)});

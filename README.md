@@ -256,3 +256,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Flag potential module imports, fetch calls, worker scripts and nested CSS imports as needing manual verification.
 - Display those risks in the export health panel without falsely claiming that the runtime resources are bundled.
 - Add seven regression tests. Static scanning remains heuristic, not exhaustive.
+
+## v4.3 — Reliable asset MIME handling and export capacity
+- Infer correct MIME types for common JS, CSS, image, font, audio, video and WASM files when browser file.type is empty or generic.
+- Cache base64 encoding per selected File object so one file matched by multiple references is read once.
+- Verify actual ArrayBuffer size against the 30 MB cap, even when File metadata is inaccurate.
+- Add a compact, accessible purple capacity meter in the white export health panel.
+- Six regression tests. Nested external CSS, module imports and runtime fetch still require deeper bundling work.
