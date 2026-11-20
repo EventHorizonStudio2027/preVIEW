@@ -145,3 +145,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.3: make asset-check progress and results easy to scan */
 #preflightAssets{min-height:44px;white-space:normal;text-wrap:balance}
 #nestedPreflightStatus{max-width:72ch}
+
+/* v5.3 final finishing touch: status tint follows verified dependency state */
+#nestedPreflightStatus[data-level="ready"]{border-left-color:#2f9b80;color:#266d5d}
+#nestedPreflightStatus[data-level="error"]{border-left-color:#c45673;color:#8b3651}
