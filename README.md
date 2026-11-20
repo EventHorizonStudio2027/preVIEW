@@ -263,3 +263,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Verify actual ArrayBuffer size against the 30 MB cap, even when File metadata is inaccurate.
 - Add a compact, accessible purple capacity meter in the white export health panel.
 - Six regression tests. Nested external CSS, module imports and runtime fetch still require deeper bundling work.
+
+## v4.4 — Unquoted asset URL compatibility
+- Bundle common unquoted HTML src, href, poster and data asset attributes, including query/fragment suffixes.
+- Keep preflight and actual export aligned for unquoted asset references.
+- Add six regression tests for images, JavaScript, stylesheets, video posters and preflight.
+- Polish the white export-health panel with an unobtrusive numeric capacity percentage.
+- Nested stylesheets, JS module imports and dynamic resource requests remain unsupported.
