@@ -35,11 +35,11 @@ export async function bundleAssets(source,files){
    const escapeRegExp=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
    const escaped=escapeRegExp(target);
    const quoted=new RegExp('(["\\x27])'+escaped+'([?#][^"\\x27\\s]*)?\\1','g');
-   html=html.replace(quoted,(_all,quote,suffix='')=>quote+data+suffix+quote);
+   html=html.replace(quoted,(_all,quote,suffix='')=>quote+data+quote);
    const srcset=new RegExp('(["\\x27,]\\s*)'+escaped+'([?#][^\\s,"\\x27]*)?(\\s+\\d+(?:\\.\\d+)?[wx])','g');
-   html=html.replace(srcset,(_all,lead,suffix='',descriptor)=>lead+data+suffix+descriptor);
+   html=html.replace(srcset,(_all,lead,suffix='',descriptor)=>lead+data+descriptor);
    const css=new RegExp('(url\\(\\s*)'+escaped+'([?#][^\\s)]*)?(\\s*\\))','gi');
-   html=html.replace(css,(_all,lead,suffix='',end)=>lead+data+suffix+end);
+   html=html.replace(css,(_all,lead,suffix='',end)=>lead+data+end);
   }
  }
  return {html,matched:replacements.size,missing:[...plan.missing,...plan.ambiguous.map(x=>x+' (ambiguous)')],bytes:plan.bytes};
