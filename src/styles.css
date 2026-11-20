@@ -62,3 +62,15 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v4.11: dependency review actions align cleanly on wide displays */
 @media(min-width:701px){.nested-preflight-actions{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center}.nested-preflight-actions .hint{min-width:0;max-width:75ch}}
+
+/* v4.12 UI refinement 1: give dependency-check controls deliberate spacing */
+.nested-preflight-actions button{border-radius:10px;letter-spacing:.005em}
+.nested-preflight-actions .hint{font-size:.92rem;line-height:1.5}
+@media(min-width:701px){.nested-preflight-actions{column-gap:18px}}
+
+/* v4.12 final visual finishing touch: subtle interactive depth, accessible motion */
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions button{transition:transform .16s ease,box-shadow .16s ease}.nested-preflight-actions button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 14px #473c8a24}.nested-preflight-actions button:active:not(:disabled){transform:translateY(0)}}
+
+/* v4.12 additional visual refinement: unmistakable keyboard focus and softer status separation */
+.nested-preflight-actions button:focus-visible{outline:3px solid #7c5de5;outline-offset:3px}
+#nestedPreflightStatus[data-level="ready"],#nestedPreflightStatus[data-level="error"]{padding-top:3px;padding-bottom:3px}

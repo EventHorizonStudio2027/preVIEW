@@ -39,6 +39,22 @@ const maskJsComments=source=>{
  }
  return out;
 };
+// Mask string/template contents for keyword validation while preserving offsets.
+const maskJsStrings=source=>{
+ let out='',i=0,quote=null;
+ while(i<source.length){
+  const c=source[i];
+  if(quote){
+   if(c==='\\'&&i+1<source.length){out+='  ';i+=2;continue}
+   if(c===quote){out+=c;quote=null}else out+=c==='\n'||c==='\r'?c:' ';
+   i++;continue;
+  }
+  if(c==='"'||c==="'"||c==='\x60'){quote=c;out+=c;i++;continue}
+  out+=c;i++;
+ }
+ return out;
+};
+const hasDynamicImport=source=>/\bimport\s*\(\s*(?!['"])/.test(maskJsStrings(maskJsComments(source)));
 const jsModuleRefs=source=>{
  const found=[];
  const patterns=[
@@ -47,7 +63,9 @@ const jsModuleRefs=source=>{
   /\bexport\s+(?:\*|\{[\s\S]*?\})\s+from\s*(['"])([^'"]+)\1/g,
   /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/g
  ];
- for(const pattern of patterns)for(const match of maskJsComments(source).matchAll(pattern)){
+ const code=maskJsComments(source),keywords=maskJsStrings(code);
+ for(const pattern of patterns)for(const match of code.matchAll(pattern)){
+  if(!/\b(?:import|export)\b/.test(keywords.slice(match.index,match.index+7)))continue;
   const ref=match[2],offset=match.index+match[0].lastIndexOf(ref);
   found.push({ref,start:offset});
  }
@@ -62,7 +80,7 @@ export async function bundleAssets(source,files){
  for(const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
   if(!/\btype\s*=\s*(['"])module\1/i.test(script[1])||/\bsrc\s*=/i.test(script[1]))continue;
   const body=script[2];
-  if(/\bimport\s*\(\s*(?!['"])/.test(body))throw Error('Inline module contains a non-literal dynamic import and cannot be bundled safely.');
+  if(hasDynamicImport(body))throw Error('Inline module contains a non-literal dynamic import and cannot be bundled safely.');
   if(jsModuleRefs(body).some(match=>jsLocal(match.ref)))throw Error('Inline module imports cannot yet be bundled. Move the module into a selected .js or .mjs file and reference it with a script src.');
  }
  const plan=planAssets(source,files);
@@ -93,7 +111,7 @@ export async function bundleAssets(source,files){
    pendingJs.add(path);
    try{
     let js=await textOf(file);
-    if(/\bimport\s*\(\s*(?!['"])/.test(js))throw Error('Non-literal dynamic import in '+path+' cannot be bundled safely. Use a static or string-literal import.');
+    if(hasDynamicImport(js))throw Error('Non-literal dynamic import in '+path+' cannot be bundled safely. Use a static or string-literal import.');
     const refs=jsModuleRefs(js);
     for(const match of [...refs].reverse()){
      const ref=match.ref;
