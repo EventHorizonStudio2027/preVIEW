@@ -41,11 +41,19 @@ export function inspectHtml(source, filename='game.html') {
   const references=collect(source);
   const counts={local:0,remote:0,unsafe:0};
   for (const ref of references) counts[ref.kind]++;
+  const runtimePatterns=[
+    {name:'JavaScript module imports',pattern:/\\b(?:import\\s*(?:\\(|(?:[\\s\\S]{0,100}?\\sfrom\\s*)?["'])|export\\s+(?:\\*|\\{)[\\s\\S]{0,100}?\\sfrom\\s*["'])/g},
+    {name:'Runtime fetch requests',pattern:/\\bfetch\\s*\\(/g},
+    {name:'Worker scripts',pattern:/\\bnew\\s+(?:Shared)?Worker\\s*\\(/g},
+    {name:'Nested stylesheet imports',pattern:/@import\\s+/gi}
+  ];
+  const runtimeDependencies=runtimePatterns.filter(({pattern})=>pattern.test(source)).map(({name})=>name);
   const sdkDetected=/\bpreVIEW\s*\.\s*register\s*\(/.test(source);
   return {
     compatible:counts.unsafe===0 && counts.local===0,
     canImport:counts.unsafe===0,
     sdkDetected,
+    runtimeDependencies,
     references:references.slice(0,MAX_REPORT),
     totalReferences:references.length,
     counts,
@@ -53,6 +61,7 @@ export function inspectHtml(source, filename='game.html') {
       ...(counts.local?[`${counts.local} local asset reference(s) may fail when importing one HTML file.`]:[]),
       ...(counts.unsafe?[`${counts.unsafe} unsafe asset reference(s) detected.`]:[]),
       ...(counts.remote?['Remote assets depend on network access and third-party availability.']:[]),
+      ...(runtimeDependencies.length?['Potential runtime dependencies need manual verification: '+runtimeDependencies.join(', ')+'.']:[]),
       ...(!sdkDetected?['No preVIEW checkpoint SDK registration detected; checkpoint playback may be unavailable.']:[])
     ]
   };
