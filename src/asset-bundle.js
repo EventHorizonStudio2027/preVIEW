@@ -59,8 +59,8 @@ const jsModuleRefs=source=>{
  const found=[];
  const patterns=[
   /\bimport\s*(['"])([^'"]+)\1/g,
-  /\bimport\s+[\s\S]*?\s+from\s*(['"])([^'"]+)\1/g,
-  /\bexport\s+(?:\*|\{[\s\S]*?\})\s+from\s*(['"])([^'"]+)\1/g,
+  /\bimport\s+[^;]*?\s+from\s*(['"])([^'"]+)\1/g,
+  /\bexport\s+(?:\*|\{[^;]*?\})\s+from\s*(['"])([^'"]+)\1/g,
   /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/g
  ];
  const code=maskJsComments(source),keywords=maskJsStrings(code);

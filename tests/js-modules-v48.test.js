@@ -96,3 +96,14 @@ test('preserves string-literal dynamic imports with adjacent comments',async()=>
  const bundled=await bundleAssets('<script type="module" src="main.js"></script>',files);
  assert.equal(bundled.bundledFiles,2);
 });
+
+
+test('module scan does not connect unrelated statements across semicolons',()=>{
+ const code=`import.meta.env; const example = 'from "./not-real.js"'; import './real.js';`;
+ assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
+});
+
+test('multiline static imports remain supported',()=>{
+ const code=`import {\n  value,\n  other\n} from './real.js';`;
+ assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
+});
