@@ -270,3 +270,9 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Add six regression tests for images, JavaScript, stylesheets, video posters and preflight.
 - Polish the white export-health panel with an unobtrusive numeric capacity percentage.
 - Nested stylesheets, JS module imports and dynamic resource requests remain unsupported.
+
+## v4.5 — URL-encoded asset paths and clearer file preflight
+- Inline local images and CSS references whose paths contain percent-encoded spaces, including nested folders and cache-busting query strings.
+- Deduplicate identical File objects when computing ambiguous matches while still flagging genuinely distinct files with identical paths.
+- Display a compact selected-file summary in the white/lavender export health panel.
+- Add six regression tests. Nested CSS and dynamic JavaScript bundling remain open.
