@@ -42,10 +42,10 @@ export function inspectHtml(source, filename='game.html') {
   const counts={local:0,remote:0,unsafe:0};
   for (const ref of references) counts[ref.kind]++;
   const runtimePatterns=[
-    {name:'JavaScript module imports',pattern:/\\b(?:import\\s*(?:\\(|(?:[\\s\\S]{0,100}?\\sfrom\\s*)?["'])|export\\s+(?:\\*|\\{)[\\s\\S]{0,100}?\\sfrom\\s*["'])/g},
-    {name:'Runtime fetch requests',pattern:/\\bfetch\\s*\\(/g},
-    {name:'Worker scripts',pattern:/\\bnew\\s+(?:Shared)?Worker\\s*\\(/g},
-    {name:'Nested stylesheet imports',pattern:/@import\\s+/gi}
+    {name:'JavaScript module imports',pattern:/\b(?:import\s*(?:\(|(?:[\s\S]{0,100}?\sfrom\s*)?["'])|export\s+(?:\*|\{)[\s\S]{0,100}?\sfrom\s*["'])/g},
+    {name:'Runtime fetch requests',pattern:/\bfetch\s*\(/g},
+    {name:'Worker scripts',pattern:/\bnew\s+(?:Shared)?Worker\s*\(/g},
+    {name:'Nested stylesheet imports',pattern:/@import\s+/gi}
   ];
   const runtimeDependencies=runtimePatterns.filter(({pattern})=>pattern.test(source)).map(({name})=>name);
   const sdkDetected=/\bpreVIEW\s*\.\s*register\s*\(/.test(source);
