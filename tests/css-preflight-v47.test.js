@@ -17,7 +17,7 @@ test('review screen exposes an explicit nested asset preflight action',()=>{
 test('preflight uses the same recursive bundler as playable export',()=>{
   assert.match(app,/const bundle=await bundleAssets\(importedHtml,\[\.\.\.assetFiles,\.\.\.assetFolderFiles\]\)/);
   assert.match(app,/Unresolved dependencies:/);
-  assert.ok(app.includes("bundle.bundledFiles+' files, including nested dependencies'"));
+  assert.ok(app.includes("'+bundle.bundledFiles+' files, including nested dependencies'"));
 });
 
 test('changing selected assets invalidates stale preflight feedback',()=>{
