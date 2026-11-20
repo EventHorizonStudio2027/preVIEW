@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {planAssets,bundleAssets} from '../src/asset-bundle.js';
+const file=(name,path='')=>({name,webkitRelativePath:path,size:2,type:'image/png',arrayBuffer:async()=>Uint8Array.from([1,2]).buffer});
+test('URL-encoded spaces in quoted src are inlined',async()=>{const r=await bundleAssets('<img src="hero%20image.png">',[file('hero image.png')]);assert.match(r.html,/src="data:image\/png;base64,/)});
+test('URL-encoded folder paths are inlined',async()=>{const r=await bundleAssets('<img src="art%20pack/hero%20image.png">',[file('hero image.png','art pack/hero image.png')]);assert.match(r.html,/src="data:image\/png;base64,/)});
+test('URL-encoded paths with cache query are inlined',async()=>{const r=await bundleAssets('<img src="hero%20image.png?v=2">',[file('hero image.png')]);assert.match(r.html,/src="data:image\/png;base64,/);assert.doesNotMatch(r.html,/%20image/)});
+test('URL-encoded CSS url() paths are inlined',async()=>{const r=await bundleAssets('<style>.x{background:url(hero%20image.png)}</style>',[file('hero image.png')]);assert.match(r.html,/url\(data:image\/png;base64,/)});
+test('repeated selection of identical file object is not ambiguous',()=>{const f=file('hero.png');const p=planAssets('<img src="hero.png">',[f,f]);assert.equal(p.ambiguous.length,0);assert.equal(p.matches.get('hero.png'),f)});
+test('distinct files with identical path remain ambiguous',()=>{const p=planAssets('<img src="hero.png">',[file('hero.png'),file('hero.png')]);assert.deepEqual(p.ambiguous,['hero.png'])});
