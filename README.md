@@ -284,3 +284,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Include nested dependencies in the 30 MB preflight limit at export time.
 - Surface a compact stylesheet-dependency status note in export health and add six regression tests.
 - JavaScript module graphs, dynamic fetch, and workers remain unsupported; CSS preflight runs at export time, not during synchronous UI readiness.
+
+
+## v4.7 — Explicit nested asset preflight
+- Added a dedicated **Check nested assets** action to Review & Export. It resolves nested CSS imports and CSS URL resources before download, instead of making the creator discover failures only after clicking export.
+- Preflight reports unresolved or ambiguous dependencies persistently in the interface and reports the aggregate embedded file size on success.
+- Changing selected asset files invalidates the prior preflight message so stale success cannot be mistaken for a current check.
+- The export path continues to run its own independent bundling and validation; preflight is advisory and does not replace export-time checks.
