@@ -4,10 +4,10 @@ import {inspectHtml} from './import-check.js';
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function base64(text){const bytes=new TextEncoder().encode(text);let result='';for(let i=0;i<bytes.length;i+=8192)result+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(result)}
 export function playableDiagnostics(sourceHtml){
- if(!sourceHtml)return {available:false,local:0,remote:0,unsafe:0,bytes:0,portable:false};
+ if(!sourceHtml)return {available:false,local:0,remote:0,unsafe:0,bytes:0,portable:false,runtimeDependencies:[]};
  const inspection=inspectHtml(sourceHtml,'game.html');
  const bytes=new TextEncoder().encode(sourceHtml).length;
- return {available:true,...inspection.counts,bytes,portable:inspection.counts.local===0&&inspection.counts.unsafe===0};
+ return {available:true,...inspection.counts,bytes,runtimeDependencies:inspection.runtimeDependencies,portable:inspection.counts.local===0&&inspection.counts.unsafe===0};
 }
 export function buildPlayableHtml(project,sourceHtml){
  if(typeof sourceHtml!=='string'||!sourceHtml.trim())throw Error('Import a game HTML file before exporting a playable preview.');
