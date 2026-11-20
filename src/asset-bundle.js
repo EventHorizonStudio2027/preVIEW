@@ -12,7 +12,7 @@ export function planAssets(source,files){
  for(const path of paths){
   const exact=map.get(path)||[];
   const suffix=[...map.keys()].filter(k=>k.endsWith('/'+path)).flatMap(k=>map.get(k));
-  const candidates=exact.length?exact:suffix;
+  const candidates=[...new Set(exact.length?exact:suffix)];
   if(candidates.length>1){ambiguous.push(path);continue}
   if(!candidates.length){missing.push(path);continue}
   matches.set(path,candidates[0]);
@@ -32,7 +32,8 @@ export async function bundleAssets(source,files){
  let html=source;
  for(const [path,data] of replacements){
   for(const prefix of ['', './']){
-   const target=prefix+path;
+   for(const encodedPath of new Set([path,encodeURI(path),encodeURIComponent(path).replace(/%2F/gi,'/')])){
+   const target=prefix+encodedPath;
    const escapeRegExp=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
    const escaped=escapeRegExp(target);
    const quoted=new RegExp('(["\\x27])'+escaped+'([?#][^"\\x27\\s]*)?\\1','g');
@@ -45,6 +46,7 @@ export async function bundleAssets(source,files){
    html=html.replace(unquoted,(_all,lead)=>lead+data);
    const css=new RegExp('(url\\(\\s*)'+escaped+'([?#][^\\s)]*)?(\\s*\\))','gi');
    html=html.replace(css,(_all,lead,suffix='',end)=>lead+data+end);
+   }
   }
  }
  return {html,matched:replacements.size,missing:[...plan.missing,...plan.ambiguous.map(x=>x+' (ambiguous)')],bytes:plan.bytes};
