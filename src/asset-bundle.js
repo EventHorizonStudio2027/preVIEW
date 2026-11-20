@@ -38,7 +38,7 @@ export async function bundleAssets(source,files){
   if(pendingCss.has(path))throw Error('Circular stylesheet import: '+path);
   pendingCss.add(path);visitedCss.add(path);
   try{
-   let css=await file.text();
+   let css=typeof file.text==='function'?await file.text():new TextDecoder().decode(await file.arrayBuffer());
    for(const ref of cssRefs(css).filter(cssLocal)){
     const dep=cssResolve(path,ref),depFile=resolveFile(dep);
     const data=await makeData(dep,depFile);
