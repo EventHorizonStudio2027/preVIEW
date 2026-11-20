@@ -21,7 +21,6 @@ export function planAssets(source,files){
 export async function bundleAssets(source,files){
  const plan=planAssets(source,files);
  if(plan.bytes>MAX_BUNDLE_BYTES)throw Error('Selected assets exceed the 30 MB bundle limit.');
- if(plan.missing.length||plan.ambiguous.length)throw Error('Cannot bundle incomplete assets: '+plan.missing.length+' missing, '+plan.ambiguous.length+' ambiguous.');
  const replacements=new Map();
  for(const [path,file] of plan.matches){
   const buffer=await file.arrayBuffer();const arr=new Uint8Array(buffer);let raw='';
