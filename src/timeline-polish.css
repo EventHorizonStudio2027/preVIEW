@@ -131,3 +131,11 @@
 .playable-health[data-level=ready]{border-color:#cdebdc;background:#f8fffb}
 .playable-health[data-level=attention]{border-color:#e9d6ac;background:#fffdf7}
 .playable-health[data-level=error]{border-color:#f3c8cf;background:#fff9fa}
+
+/* Compact export capacity indicator, matching preVIEW's light visual system. */
+.bundle-meter{display:block;width:100%;height:7px;margin:9px 0 12px;appearance:none;border:0;border-radius:999px;overflow:hidden;background:#e9e1ff}
+.bundle-meter::-webkit-progress-bar{background:#e9e1ff;border-radius:999px}
+.bundle-meter::-webkit-progress-value{background:#7958e8;border-radius:999px}
+.bundle-meter::-moz-progress-bar{background:#7958e8;border-radius:999px}
+.playable-health[data-level="error"] .bundle-meter::-webkit-progress-value{background:#b42318}
+.playable-health[data-level="error"] .bundle-meter::-moz-progress-bar{background:#b42318}
