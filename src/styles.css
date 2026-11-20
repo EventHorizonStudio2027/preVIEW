@@ -133,3 +133,11 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 #publish .panel h2{letter-spacing:-.018em;line-height:1.25}
 #publish .panel:focus-within{border-color:#a994ff80}
 @media(prefers-reduced-motion:no-preference){#publish .panel{transition:border-color .18s ease}}
+
+/* v5.2: export preparation feedback stays legible at narrow widths */
+#exportPlayable{min-height:44px;white-space:normal;text-wrap:balance}
+#exportPlayable:disabled{cursor:progress}
+
+/* v5.2 final visual touch: distinct but calm export progress state */
+#exportPlayable:disabled{filter:saturate(.82);box-shadow:inset 0 1px 0 #ffffff40}
+@media(prefers-reduced-motion:no-preference){#exportPlayable{transition:filter .18s ease,box-shadow .18s ease}}
