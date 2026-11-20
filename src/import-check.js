@@ -22,9 +22,9 @@ function collect(source) {
   for (const match of source.matchAll(tag)) {
     for (const a of match[0].matchAll(attr)) {
       const value=a[1]??a[2]??a[3]??'';
-      if (/^srcset\\s*=/i.test(a[0])) {
+      if (/^srcset\s*=/i.test(a[0])) {
         for (const part of value.split(',')) {
-          const candidate=part.trim().split(/\\s+/)[0];
+          const candidate=part.trim().split(/\s+/)[0];
           if(candidate)values.push(candidate);
         }
       } else values.push(value);
