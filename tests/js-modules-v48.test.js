@@ -107,3 +107,17 @@ test('multiline static imports remain supported',()=>{
  const code=`import {\n  value,\n  other\n} from './real.js';`;
  assert.deepEqual(javascriptModuleDependencies(code,'main.js'),['real.js']);
 });
+
+
+test('inline module package specifiers fail with actionable diagnostics',async()=>{
+ await assert.rejects(bundleAssets('<script type="module">import "three";</script>',[]),/Unsupported bare JavaScript module specifier.*three/);
+});
+
+test('inline module import-map aliases fail with actionable diagnostics',async()=>{
+ await assert.rejects(bundleAssets('<script type="module">import "#engine";</script>',[]),/Unsupported bare JavaScript module specifier.*#engine/);
+});
+
+test('inline module remote imports remain permitted',async()=>{
+ const result=await bundleAssets('<script type="module">import "https://cdn.example.org/runtime.mjs";</script>',[]);
+ assert.equal(result.bundledFiles,0);
+});
