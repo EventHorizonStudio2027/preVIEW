@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import { buildPlayableHtml } from '../../src/playable-export.js';
+import { bundleAssets } from '../../src/asset-bundle.js';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -74,6 +75,20 @@ try {
   if (await game.locator('#counter').textContent() !== 'Clicked ✓') throw new Error('Exported playable game did not respond to interaction');
   if (await page.locator('a.cta').getAttribute('href') !== 'https://example.com/full') throw new Error('Exported CTA destination incorrect');
   if (!await page.getByText('Arcade 🎮').count()) throw new Error('Exported title lost Unicode characters');
+  // End-to-end asset-rich export: bundled image must render without a network request.
+  const png=Uint8Array.from(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64'));
+  const asset={name:'pixel.png',size:png.length,type:'image/png',arrayBuffer:async()=>png.buffer};
+  const bundled=await bundleAssets('<!doctype html><html><body><img id="pixel" src="pixel.png"><style>#tile{width:10px;height:10px;background-image:url(pixel.png)}</style><div id="tile"></div></body></html>',[asset]);
+  if(bundled.matched!==1||bundled.missing.length)throw new Error('Asset bundle did not match fixture image');
+  await page.setContent(buildPlayableHtml({name:'Asset test',ctaText:'Play',ctaUrl:'https://example.com'},bundled.html),{waitUntil:'domcontentloaded'});
+  const image=page.frameLocator('#game').locator('#pixel');
+  await image.waitFor();
+  await page.waitForFunction(()=>{const i=document.querySelector('#game')?.contentDocument?.querySelector('#pixel');return i?.complete&&i?.naturalWidth===1;}).catch(async()=>{
+    const dimensions=await image.evaluate(i=>({complete:i.complete,width:i.naturalWidth}));
+    if(dimensions.width!==1)throw new Error('Bundled image did not render: '+JSON.stringify(dimensions));
+  });
+  const background=await page.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
+  if(!background.startsWith('url("data:image/png;base64,'))throw new Error('Bundled CSS image did not resolve');
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (workspace, demo, exported playable game, Unicode and CTA)');
