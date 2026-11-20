@@ -60,7 +60,7 @@ export async function bundleAssets(source,files){
     let js=await textOf(file);
     if(/\bimport\s*\(\s*(?!['"])/.test(js))throw Error('Non-literal dynamic import in '+path+' cannot be bundled safely. Use a static or string-literal import.');
     const refs=jsModuleRefs(js);
-    for(const match of refs){
+    for(const match of [...refs].reverse()){
      const ref=match[3]||match[5]||match[7];
      if(!jsLocal(ref))continue;
      const dep=jsResolve(path,ref),depFile=resolveFile(dep);
