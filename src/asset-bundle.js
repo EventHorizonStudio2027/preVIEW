@@ -25,10 +25,23 @@ const cssRefs=css=>[...css.matchAll(/url\(\s*(?:["']([^"']+)["']|([^\s)]+))\s*\)
 const cssLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
 const cssResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded CSS asset path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe CSS asset path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('CSS asset escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
 export function stylesheetDependencies(css,base){return [...new Set(cssRefs(css).filter(cssLocal).map(ref=>cssResolve(base,ref)))]}
-const jsModuleRefs=source=>[...source.matchAll(/\bimport\s+(?:([\s\S]*?)\s+from\s*)?(['"])([^'"]+)\2|\bexport\s+(?:\*|\{[\s\S]*?\})\s+from\s*(['"])([^'"]+)\4|\bimport\s*\(\s*(['"])([^'"]+)\6\s*\)/g)];
+const jsModuleRefs=source=>{
+ const found=[];
+ const patterns=[
+  /\bimport\s*(['"])([^'"]+)\1/g,
+  /\bimport\s+[\s\S]*?\s+from\s*(['"])([^'"]+)\1/g,
+  /\bexport\s+(?:\*|\{[\s\S]*?\})\s+from\s*(['"])([^'"]+)\1/g,
+  /\bimport\s*\(\s*(['"])([^'"]+)\1\s*\)/g
+ ];
+ for(const pattern of patterns)for(const match of source.matchAll(pattern)){
+  const ref=match[2],offset=match.index+match[0].lastIndexOf(ref);
+  found.push({ref,start:offset});
+ }
+ return [...new Map(found.map(item=>[item.start,item])).values()].sort((a,b)=>a.start-b.start);
+};
 const jsLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
 const jsResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded JavaScript module path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe JavaScript module path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('JavaScript module escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
-export function javascriptModuleDependencies(source,base){return [...new Set(jsModuleRefs(source).map(m=>m[3]||m[5]||m[7]).filter(jsLocal).map(ref=>jsResolve(base,ref)))]}
+export function javascriptModuleDependencies(source,base){return [...new Set(jsModuleRefs(source).map(m=>m.ref).filter(jsLocal).map(ref=>jsResolve(base,ref)))]}
 export async function bundleAssets(source,files){
  for(const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
   if(!/\btype\s*=\s*(['"])module\1/i.test(script[1])||/\bsrc\s*=/i.test(script[1]))continue;
@@ -67,12 +80,12 @@ export async function bundleAssets(source,files){
     if(/\bimport\s*\(\s*(?!['"])/.test(js))throw Error('Non-literal dynamic import in '+path+' cannot be bundled safely. Use a static or string-literal import.');
     const refs=jsModuleRefs(js);
     for(const match of [...refs].reverse()){
-     const ref=match[3]||match[5]||match[7];
+     const ref=match.ref;
      if(!jsLocal(ref))continue;
      const dep=jsResolve(path,ref),depFile=resolveFile(dep,'JavaScript');
      if(!/\.(?:m?js)$/i.test(dep))throw Error('JavaScript module import must resolve to a .js or .mjs file: '+dep);
      const data=await makeData(dep,depFile);
-     const offset=match.index+match[0].lastIndexOf(ref);
+     const offset=match.start;
      js=js.slice(0,offset)+data+js.slice(offset+ref.length);
     }
     return 'data:text/javascript;base64,'+toBase64(js);
