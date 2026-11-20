@@ -16,14 +16,15 @@ test('recursively embeds JavaScript module graph and rewrites specifiers',async(
  ];
  const result=await bundleAssets('<script type="module" src="src/main.js"></script>',files);
  assert.equal(result.missing.length,0);
- assert.match(result.html,/src="data:text\\/javascript;base64,/);
- const entry=atob(result.html.match(/src="data:text\\/javascript;base64,([^"]+)/)[1]);
- assert.match(entry,/data:text\\/javascript;base64,/);
+ assert.ok(result.html.includes('src="data:text/javascript;base64,'));
+ const src=result.html.match(/src="([^"]+)"/)[1];
+ const entry=atob(src.split(',')[1]);
+ assert.ok(entry.includes('data:text/javascript;base64,'));
  assert.equal(result.bytes,files.reduce((n,f)=>n+f.size,0));
 });
 
 test('fails closed for missing nested JavaScript modules',async()=>{
- await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',"import './missing.js';")]),/Missing nested asset: missing\\.js/);
+ await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',"import './missing.js';")]),error=>error.message==='Missing JavaScript asset: missing.js');
 });
 
 test('fails closed for non-literal dynamic imports',async()=>{
