@@ -35,3 +35,16 @@ test('playable export shows preparation state and restores label',()=>{
  assert.match(app,/Preparing playable file…/);
  assert.match(app,/exportButton\.textContent='Download playable HTML'/);
 });
+
+test('asset preflight cannot run concurrently',()=>{
+ const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.match(app,/if\(assetPreflightBusy\)return/);
+ assert.match(app,/finally\{assetPreflightBusy=false/);
+});
+test('asset preflight ignores stale results after asset selection changes',()=>{
+ const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.match(app,/if\(version!==assetSelectionVersion\)return/);
+ assert.match(app,/assetSelectionVersion\+\+;assetFiles=/);
+ assert.match(app,/assetSelectionVersion\+\+;assetFolderFiles=/);
+ assert.match(app,/function clearGame\(\)\{assetSelectionVersion\+\+/);
+});
