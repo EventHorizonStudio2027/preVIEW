@@ -133,3 +133,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 #publish .panel h2{letter-spacing:-.018em;line-height:1.25}
 #publish .panel:focus-within{border-color:#a994ff80}
 @media(prefers-reduced-motion:no-preference){#publish .panel{transition:border-color .18s ease}}
+
+/* v5.2: export preparation feedback stays legible at narrow widths */
+#exportPlayable{min-height:44px;white-space:normal;text-wrap:balance}
+#exportPlayable:disabled{cursor:progress}
