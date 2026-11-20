@@ -80,13 +80,15 @@ try {
   const asset={name:'pixel.png',size:png.length,type:'image/png',arrayBuffer:async()=>png.buffer};
   const bundled=await bundleAssets('<!doctype html><html><body><img id="pixel" src="pixel.png"><style>#tile{width:10px;height:10px;background-image:url(pixel.png)}</style><div id="tile"></div></body></html>',[asset]);
   if(bundled.matched!==1||bundled.missing.length)throw new Error('Asset bundle did not match fixture image');
-  await page.setContent(buildPlayableHtml({name:'Asset test',ctaText:'Play',ctaUrl:'https://example.com'},bundled.html),{waitUntil:'domcontentloaded'});
-  const image=page.frameLocator('#game').locator('#pixel');
+  const assetPage=await browser.newPage();
+  await assetPage.setContent(buildPlayableHtml({name:'Asset test',ctaText:'Play',ctaUrl:'https://example.com'},bundled.html),{waitUntil:'domcontentloaded'});
+  const image=assetPage.frameLocator('#game').locator('#pixel');
   await image.waitFor({state:'attached'});
   const dimensions=await image.evaluate(async i=>{await i.decode();return {complete:i.complete,width:i.naturalWidth}});
   if(dimensions.width!==1)throw new Error('Bundled image did not render: '+JSON.stringify(dimensions));
-  const background=await page.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
+  const background=await assetPage.frameLocator('#game').locator('#tile').evaluate(e=>getComputedStyle(e).backgroundImage);
   if(!background.startsWith('url("data:image/png;base64,'))throw new Error('Bundled CSS image did not resolve');
+  await assetPage.close();
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (workspace, demo, exported playable game, Unicode and CTA)');
