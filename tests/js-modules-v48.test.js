@@ -84,3 +84,15 @@ test('dynamic-import-looking text in comments and strings does not fail the expo
 test('real variable dynamic imports still fail closed',async()=>{
  await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js','import(getName());')]),/Non-literal dynamic import/);
 });
+
+
+test('rejects dynamic import with comments between keyword and argument',async()=>{
+ const code='const loader=()=>import /* loading path */ (resolvePath());';
+ await assert.rejects(bundleAssets('<script type="module" src="main.js"></script>',[file('main.js',code)]),/Non-literal dynamic import/);
+});
+
+test('preserves string-literal dynamic imports with adjacent comments',async()=>{
+ const files=[file('main.js',"const load=()=>import /* local module */ ('./child.js');"),file('child.js','export const ok=true;')];
+ const bundled=await bundleAssets('<script type="module" src="main.js"></script>',files);
+ assert.equal(bundled.bundledFiles,2);
+});
