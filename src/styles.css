@@ -110,3 +110,12 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v4.16 final visual finishing touch: calmer status accent */
 #nestedPreflightStatus{border-left-color:#9779db;border-radius:2px}
 @media(prefers-reduced-motion:no-preference){.nested-preflight-actions button{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}}
+
+/* v4.17: cleaner review panel proportions on compact screens */
+.nested-preflight-actions{min-width:0}
+.nested-preflight-actions button{min-height:42px}
+@media(max-width:700px){.nested-preflight-actions{row-gap:12px}.nested-preflight-actions button{width:100%;justify-content:center}}
+
+/* v4.17 final polish: restrained luminous edge on dependency review */
+.nested-preflight-actions{box-shadow:inset 0 1px 0 #ffffffb8,0 8px 22px #473c8a0e}
+@media(prefers-reduced-motion:no-preference){.nested-preflight-actions{transition:border-color .18s ease,box-shadow .18s ease}}

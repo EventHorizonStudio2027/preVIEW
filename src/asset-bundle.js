@@ -23,7 +23,29 @@ export function planAssets(source,files){
 // Resolve stylesheet dependencies relative to the stylesheet's own directory.
 const cssRefs=css=>[...maskCssComments(css).matchAll(/url\(\s*(?:["']([^"']+)["']|([^\s)]+))\s*\)|@import\s+["']([^"']+)["']/gi)].map(m=>m[1]||m[2]||m[3]).filter(Boolean);
 // Ignore CSS references in comments without shifting source offsets.
-const maskCssComments=css=>css.replace(/\/\*[\s\S]*?\*\//g,comment=>comment.replace(/[^\r\n]/g,' '));
+const maskCssComments=css=>{
+ let out='',i=0,quote=null;
+ while(i<css.length){
+  const c=css[i],next=css[i+1];
+  if(quote){
+   out+=c;i++;
+   if(c==='\\'&&i<css.length){out+=css[i++];continue}
+   if(c===quote)quote=null;
+   continue;
+  }
+  if(c==='"'||c==="'"){quote=c;out+=c;i++;continue}
+  if(c==='/'&&next==='*'){
+   out+='  ';i+=2;
+   while(i<css.length){
+    if(css[i]==='*'&&css[i+1]==='/'){out+='  ';i+=2;break}
+    out+=css[i]==='\n'||css[i]==='\r'?css[i]:' ';i++;
+   }
+   continue;
+  }
+  out+=c;i++;
+ }
+ return out;
+};
 const cssLocal=ref=>!ref.startsWith('#')&&!/^(?:data:|blob:|https?:|\/\/)/i.test(ref);
 const cssResolve=(base,ref)=>{const raw=ref.split(/[?#]/)[0];let decoded;try{decoded=decodeURIComponent(raw)}catch{throw Error('Invalid encoded CSS asset path: '+ref)}if(decoded.startsWith('/')||decoded.includes('\\'))throw Error('Unsafe CSS asset path: '+ref);const parts=base.split('/').slice(0,-1);for(const segment of decoded.split('/')){if(segment==='.'||!segment)continue;if(segment==='..'){if(!parts.length)throw Error('CSS asset escapes project folder: '+ref);parts.pop()}else parts.push(segment)}return parts.join('/')};
 export function stylesheetDependencies(css,base){return [...new Set(cssRefs(css).filter(cssLocal).map(ref=>cssResolve(base,ref)))]}
