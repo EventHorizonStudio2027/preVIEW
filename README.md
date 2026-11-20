@@ -243,3 +243,10 @@ The creator workspace now displays `assets/brand/wordmark-light.png` in navigati
 - Inline unquoted CSS url() paths and srcset candidates.
 - Improve export checklist microcopy and add four URL regression tests.
 - Dynamic JavaScript and nested external stylesheet dependencies remain unsupported.
+
+## v4.1 — Asset-rich exported game browser verification
+- Extend Playwright smoke test to bundle a real 1x1 PNG into game HTML, export it, and verify the image decodes inside the sandboxed playable iframe.
+- Verify bundled CSS background-image resolves to a data URL in the exported game.
+- Add three regression tests for shared image/CSS references and browser coverage.
+- Improve health-panel guidance for creators fixing missing assets.
+- This does not yet cover nested external CSS, module imports or dynamic fetch.
