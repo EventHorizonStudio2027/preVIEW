@@ -21,5 +21,7 @@ test('new game imports and demo selection invalidate stale asynchronous file rea
  assert.match(app,/let importGeneration=0/);
  assert.match(app,/const generation=\+\+importGeneration/);
  assert.match(app,/html=await file\.text\(\);if\(generation!==importGeneration\)return/);
- assert.match(app,/\$\('loadDemo'\)\.onclick=\(\)=>\{importGeneration\+\+;clearGame\(\)/);
+ assert.match(app,/function clearGame\(\)\{importGeneration\+\+;/);
+ assert.match(app,/\$\('loadDemo'\)\.onclick=\(\)=>\{clearGame\(\)/);
+ assert.match(app,/const contents=await file\.text\(\);if\(generation!==importGeneration\)return/);
 });
