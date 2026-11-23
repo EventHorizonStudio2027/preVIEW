@@ -264,3 +264,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v6.9 interaction polish: make the primary checkpoint action feel responsive when available */
 @media(hover:hover) and (prefers-reduced-motion:no-preference){#captureCheckpoint:not(:disabled):hover{filter:brightness(1.08);transform:translateY(-1px)}#captureCheckpoint:not(:disabled):active{transform:translateY(0);filter:brightness(.98)}}
+
+/* v6.10 final polish: accessible SDK status indicator uses a calm accent and stable spacing */
+#sdkStatus{display:block;padding:7px 10px;border-left:2px solid #a78bfa;border-radius:0 7px 7px 0;background:linear-gradient(90deg,#a78bfa12,transparent 82%);line-height:1.55}
+@media(prefers-reduced-motion:no-preference){#sdkStatus{transition:border-color .16s ease,background-color .16s ease}}
