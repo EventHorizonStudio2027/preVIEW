@@ -12,7 +12,8 @@
       if(msg.type==='capture'){
         const state=await handlers.capture();
         const serialized=JSON.stringify(state);
-        if(!serialized||serialized.length>250000)throw Error('Checkpoint exceeds 250 KB');
+        if(serialized===undefined)throw Error('Checkpoint state must be JSON-serializable');
+        if(serialized.length>250000)throw Error('Checkpoint exceeds 250 KB');
         send('checkpoint',{requestId:msg.requestId,state:JSON.parse(serialized)});
       }
       if(msg.type==='pause'||msg.type==='resume'){
