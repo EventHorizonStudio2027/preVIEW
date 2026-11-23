@@ -184,3 +184,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.8 UX: concise, readable import diagnostics across narrow and wide layouts */
 #importDiagnostics{max-width:100%;overflow-wrap:anywhere;line-height:1.55}
 @media(max-width:620px){#importDiagnostics{font-size:13px}.panel-title{flex-wrap:wrap;row-gap:12px}.panel-title .file-button{flex-shrink:0}}
+
+/* v5.8 final visual polish: clear error hierarchy and gentle contrast on diagnostic copy */
+#importDiagnostics[data-level="caution"]{border-left:3px solid #d3a66b;padding-left:12px}
+#importDiagnostics[data-level="ready"]{border-left:3px solid #78c9ad;padding-left:12px}
+@media(prefers-reduced-motion:no-preference){#importDiagnostics{transition:border-color .18s ease,padding .18s ease}}
