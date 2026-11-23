@@ -75,6 +75,10 @@ try {
   if (await demoGame.locator('#score').textContent() !== '0') throw new Error('Checkpoint demo reset failed');
   // A captured checkpoint must be present before attempting guided playback.
   await page.waitForFunction(() => document.querySelector('#checkpointTarget')?.options.length > 0);
+  await page.locator('#walkthroughStart').click();
+  await page.waitForFunction(() => document.querySelector('#walkthroughStatus')?.textContent?.includes('Two stars') || document.querySelector('#feedback')?.textContent?.includes('Restored Two stars'));
+  if (await demoGame.locator('#score').textContent() !== '2') throw new Error('Checkpoint restore did not recover captured game state');
+  await page.locator('#walkthroughEnd').click();
 
   await page.locator('[data-step="review"]').click();
   await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
