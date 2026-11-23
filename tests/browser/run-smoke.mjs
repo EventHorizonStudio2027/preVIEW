@@ -86,7 +86,7 @@ try {
   await page.goBack({waitUntil:'domcontentloaded'});
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
   // User-facing import -> review -> downloaded playable HTML (not just the builder function).
-  await page.locator('#gameFile').setInputFiles({name:'tiny-game.html',mimeType:'text/html',buffer:Buffer.from('<!doctype html><html><body><button id="realGame" onclick="this.textContent=\\'Played\\'">Play</button></body></html>')});
+  await page.locator('#gameFile').setInputFiles({name:'tiny-game.html',mimeType:'text/html',buffer:Buffer.from(`<!doctype html><html><body><button id="realGame" onclick="this.textContent='Played'">Play</button></body></html>`)});
   await page.waitForFunction(() => document.querySelector('#filename')?.textContent?.includes('tiny-game.html'));
   await page.locator('[data-step="review"]').click();
   await page.locator('#ctaUrl').fill('https://example.com/full');
