@@ -82,6 +82,8 @@ try {
   await page.waitForFunction(()=>!document.querySelector('#walkthroughNext')?.disabled || document.querySelector('#walkthroughStatus')?.textContent?.includes('Two stars'));
   if (!(await page.locator('#walkthroughStatus').textContent())?.includes('Two stars')) throw new Error('Guided review did not select the captured moment');
   await page.locator('#walkthroughEnd').click();
+  await page.locator('#walkthroughStart:not([disabled])').waitFor();
+  if((await page.locator('#walkthroughStatus').textContent())?.includes('Restoring checkpoint'))throw new Error('Guided review status remained stuck after restore');
 
   await page.locator('[data-step="review"]').click();
   await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
