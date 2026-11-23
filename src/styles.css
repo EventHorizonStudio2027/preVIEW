@@ -189,3 +189,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 #importDiagnostics[data-level="caution"]{border-left:3px solid #d3a66b;padding-left:12px}
 #importDiagnostics[data-level="ready"]{border-left:3px solid #78c9ad;padding-left:12px}
 @media(prefers-reduced-motion:no-preference){#importDiagnostics{transition:border-color .18s ease,padding .18s ease}}
+
+/* v5.9 final visual polish: upload labels gain a clear focused edge without flashing on pointer clicks */
+.file-button:has(input:focus-visible){outline:3px solid #bda9ff;outline-offset:3px;background:linear-gradient(155deg,#3a3558,#292b42);box-shadow:0 0 0 6px #bda9ff22,inset 0 1px 0 #ffffff20}
+@media(prefers-reduced-motion:reduce){.file-button{transition:none!important}}
