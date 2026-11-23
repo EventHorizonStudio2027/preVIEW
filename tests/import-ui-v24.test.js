@@ -25,3 +25,13 @@ test('new game imports and demo selection invalidate stale asynchronous file rea
  assert.match(app,/\$\('loadDemo'\)\.onclick=\(\)=>\{clearGame\(\)/);
  assert.match(app,/const contents=await file\.text\(\);if\(generation!==importGeneration\)return/);
 });
+
+test('SDK handshake retries are scoped to their own game session',()=>{
+ assert.match(app,/token=sessionToken;let attempts=0/);
+ assert.match(app,/if\(token!==sessionToken\|\|sdkReady\)return/);
+ assert.match(app,/Checkpoint SDK: no response from game/);
+});
+test('outdated backup reads cannot reset newer selections or show stale errors',()=>{
+ assert.match(app,/if\(generation===importGeneration\)notify\('Could not restore project:/);
+ assert.match(app,/if\(generation===importGeneration\)e\.target\.value=''/);
+});
