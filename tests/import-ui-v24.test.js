@@ -8,7 +8,7 @@ test('asset diagnostics summarize local and remote counts',()=>assert.match(app,
 test('asset diagnostics have accessible visual states',()=>{assert.match(css,/#importDiagnostics\[data-level="ready"\]/);assert.match(css,/#importDiagnostics\[data-level="caution"\]/)});
 
 test('invalid HTML selections clear the input to allow selecting the same corrected file',()=>{
- assert.match(app,/Choose an HTML file under 20 MB\.\x27\);e\.target\.value=\x27\x27;return/);
+ assert.match(app,/Choose a non-empty HTML file under 20 MB\.\x27\);e\.target\.value=\x27\x27;return/);
  assert.match(app,/Import blocked: unsafe asset references detected\.\x27\);e\.target\.value=\x27\x27;return/);
 });
 
@@ -34,4 +34,9 @@ test('SDK handshake retries are scoped to their own game session',()=>{
 test('outdated backup reads cannot reset newer selections or show stale errors',()=>{
  assert.match(app,/if\(generation===importGeneration\)notify\('Could not restore project:/);
  assert.match(app,/if\(generation===importGeneration\)e\.target\.value=''/);
+});
+
+test('empty HTML uploads are rejected without discarding the current game',()=>{
+ assert.match(app,/file\.size===0\|\|file\.size>20\*1024\*1024/);
+ assert.match(app,/Choose a non-empty HTML file under 20 MB/);
 });
