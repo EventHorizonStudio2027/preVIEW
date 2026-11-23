@@ -22,7 +22,8 @@ async function goWalkthrough(index){
  if(walkthroughRestoring)return;
  walkthroughRestoring=true;
  updateWalkthrough();
- try{const step=walkthroughStep(state,index);await requestSDK('restore',{state:step.state});walkthroughIndex=index;notify(`Restored ${step.title}. Play the moment, then advance when ready.`)}catch(e){notify(e.message)}finally{walkthroughRestoring=false;updateWalkthrough()}
+ $('walkthroughStatus').textContent='Restoring checkpoint…';
+ try{const step=walkthroughStep(state,index);await requestSDK('restore',{state:step.state});walkthroughIndex=index;notify(`Restored ${step.title}. Play the moment, then advance when ready.`)}catch(e){notify('Checkpoint restore failed: '+e.message)}finally{walkthroughRestoring=false;updateWalkthrough()}
 }
 function stopPlayback(message){
  const wasPaused=playbackPaused;playbackGeneration++;clearTimeout(playbackTimer);playbackTimer=null;playbackRunning=false;playbackPaused=false;playbackTransitioning=false;if(wasPaused&&sdkReady)requestSDK('resume').catch(()=>{});
