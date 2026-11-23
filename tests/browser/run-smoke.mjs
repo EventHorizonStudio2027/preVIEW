@@ -96,6 +96,11 @@ try {
   const downloadPath=await download.path();
   const downloaded=await readFile(downloadPath,'utf8');
   if(!downloaded.includes('id="game"')||!downloaded.includes('https://example.com/full'))throw new Error('UI downloaded invalid playable HTML');
+  const downloadedPage=await browser.newPage();
+  await downloadedPage.setContent(downloaded,{waitUntil:'domcontentloaded'});
+  await downloadedPage.frameLocator('#game').locator('#realGame').click();
+  if(await downloadedPage.frameLocator('#game').locator('#realGame').textContent()!=='Played')throw new Error('Downloaded playable artifact did not run the imported game');
+  await downloadedPage.close();
   await page.locator('[data-view="editor"]').first().click();
   // Exercise the actual exported artifact, including Unicode, sandboxed interaction and CTA.
   const exported = buildPlayableHtml({name:'Arcade 🎮',ctaText:'Play the full game',ctaUrl:'https://example.com/full'},
