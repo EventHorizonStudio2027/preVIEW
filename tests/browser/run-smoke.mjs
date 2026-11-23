@@ -77,7 +77,9 @@ try {
   // A captured checkpoint must be present before attempting guided playback.
   await page.waitForFunction(() => document.querySelector('#checkpointTarget')?.options.length > 0);
   await page.locator('#walkthroughStart').click();
+  await page.waitForFunction(()=>document.querySelector('#walkthroughStart')?.disabled);
   await demoGame.locator('#score').filter({hasText:/^2$/}).waitFor();
+  await page.waitForFunction(()=>!document.querySelector('#walkthroughNext')?.disabled || document.querySelector('#walkthroughStatus')?.textContent?.includes('Two stars'));
   if (!(await page.locator('#walkthroughStatus').textContent())?.includes('Two stars')) throw new Error('Guided review did not select the captured moment');
   await page.locator('#walkthroughEnd').click();
 
