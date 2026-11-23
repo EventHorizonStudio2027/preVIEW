@@ -224,3 +224,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.3 final design pass: refined SDK connection-status typography */
 #sdkStatus{font-variant-numeric:tabular-nums;letter-spacing:.012em;text-wrap:pretty}
 @media(prefers-reduced-motion:no-preference){#sdkStatus{transition:color .18s ease}}
+
+/* v6.4 interface improvement: keep selected game filename readable on narrow screens */
+#filename{min-width:0;max-width:100%;overflow-wrap:anywhere;text-wrap:pretty}
+@media(max-width:620px){#filename{line-height:1.45}}
