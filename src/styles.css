@@ -216,3 +216,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.2 final visual polish: softly illuminate the checkpoint status on keyboard navigation */
 #walkthroughStatus{border-radius:8px;padding:5px 8px;background:linear-gradient(90deg,#9380ce0d,transparent 75%)}
 @media(prefers-reduced-motion:no-preference){#walkthroughStatus{transition:background-color .18s ease}}
+
+/* v6.3: keep SDK connection feedback readable at mobile widths */
+#sdkStatus{max-width:100%;overflow-wrap:anywhere;line-height:1.5}
+@media(max-width:620px){#sdkStatus{font-size:13px}}
