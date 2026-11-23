@@ -61,6 +61,21 @@ try {
   await page.locator('#gameFrame').contentFrame().locator('body').waitFor();
   await page.waitForFunction(() => document.querySelector('#sessionStatus')?.textContent === 'Demo loaded');
   await page.locator('[data-step="import"].completed').waitFor();
+  // Real checkpoint round-trip: game state -> captured moment -> restored state.
+  await page.waitForFunction(() => !document.querySelector('#captureCheckpoint')?.disabled);
+  const demoGame=page.frameLocator('#gameFrame');
+  await demoGame.locator('#collect').click();
+  await demoGame.locator('#collect').click();
+  await page.locator('#startSession').click();
+  await page.locator('#momentTitle').fill('Two stars');
+  await page.locator('#addMoment').click();
+  await page.locator('#captureCheckpoint').click();
+  await page.waitForFunction(() => document.querySelector('#feedback')?.textContent?.includes('Checkpoint saved'));
+  await demoGame.locator('#clear').click();
+  if (await demoGame.locator('#score').textContent() !== '0') throw new Error('Checkpoint demo reset failed');
+  // A captured checkpoint must be present before attempting guided playback.
+  await page.waitForFunction(() => document.querySelector('#checkpointTarget')?.options.length > 0);
+
   await page.locator('[data-step="review"]').click();
   await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
   await page.goBack({waitUntil:'domcontentloaded'});
