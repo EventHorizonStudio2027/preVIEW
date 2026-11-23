@@ -148,6 +148,9 @@ try {
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   await mobile.goto(origin+'/index.html',{waitUntil:'domcontentloaded'});
   await mobile.locator('[data-step="import"]').click();
+  // Import must be reachable without a pointer, including hidden native file inputs.
+  const keyboardFile=mobile.locator('#gameFile');
+  if(!(await keyboardFile.evaluate(e=>e.tabIndex>=0&&getComputedStyle(e).display!=='none')))throw new Error('File import is inaccessible to keyboard users');
   await mobile.locator('#loadDemo').click();
   await mobile.waitForFunction(()=>document.querySelector('#sessionStatus')?.textContent==='Demo loaded');
   const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
