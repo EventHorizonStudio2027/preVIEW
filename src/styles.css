@@ -158,3 +158,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.4 final visual finish: quiet lavender checkpoint emphasis */
 #captureCheckpoint:focus-visible,#checkpointTarget:focus-visible{outline:3px solid #9875ed;outline-offset:3px;box-shadow:0 0 0 6px #9875ed22}
 @media(prefers-reduced-motion:no-preference){#captureCheckpoint:not(:disabled){transition:box-shadow .18s ease,transform .18s ease}#captureCheckpoint:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 6px 16px #6540b522}}
+
+/* v5.5 final visual polish: polished review CTA with restrained depth and clearer keyboard state */
+#exportPlayable:not(:disabled){box-shadow:inset 0 1px 0 #ffffff38,0 4px 12px #6441b526}
+#exportPlayable:focus-visible{outline:3px solid #7752d7;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#exportPlayable,#captureCheckpoint{transition:none!important;transform:none!important}}
