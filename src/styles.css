@@ -247,3 +247,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v6.6 final visual pass: restrained SDK status surface and soft contrast */
 #sdkStatus{border-radius:6px;background:linear-gradient(90deg,#9380ce0c,transparent 85%);text-shadow:0 1px 0 #00000014}
+
+/* v6.7 import usability: keep diagnostic messages readable in compact layouts */
+#importDiagnostics{overflow-wrap:anywhere;max-width:100%;line-height:1.6}
+@media(max-width:620px){#importDiagnostics{padding-block:6px}}
