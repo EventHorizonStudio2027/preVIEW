@@ -166,3 +166,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v5.6 mobile workspace: keep embedded content and review controls inside viewport */
 @media(max-width:620px){.main,.page,.panel,.editor-main,.editor-grid,.publish-grid,.heading{min-width:0;max-width:100%}.page{padding-left:16px;padding-right:16px}.panel{overflow-wrap:anywhere}.actions{flex-wrap:wrap}.actions>*{max-width:100%}#gameFrame{max-width:100%}}
+
+/* v5.6 final polish: legible, gently illuminated focused workspace panels */
+.panel:focus-within{border-color:#9d82ed80;box-shadow:inset 0 1px 0 #ffffff09,0 10px 28px #5a40a312}
+@media(prefers-reduced-motion:no-preference){.panel{transition:border-color .18s ease,box-shadow .18s ease}}
+@media(prefers-reduced-motion:reduce){.panel{transition:none}}
