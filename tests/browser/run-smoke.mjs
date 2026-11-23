@@ -23,8 +23,9 @@ let browser;
 let page;
 try {
   await new Promise((ok, bad) => { server.once('error', bad); server.listen(0, '127.0.0.1', ok); });
-  const { chromium } = await import('playwright');
-  browser = await chromium.launch({ headless: true, timeout: 20000 });
+  const { chromium, webkit } = await import('playwright');
+  const engine = process.env.BROWSER_ENGINE === 'webkit' ? webkit : chromium;
+  browser = await engine.launch({ headless: true, timeout: 20000 });
   page = await browser.newPage();
   page.setDefaultTimeout(10000);
   const errors = [];
