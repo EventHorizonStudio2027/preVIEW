@@ -56,6 +56,7 @@ test('SDK rejects unregistered or non-serializable checkpoint values',async()=>{
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(h.sent.at(-1).type,'error');
   assert.equal(h.sent.at(-1).requestId,'capture-2');
+  assert.match(h.sent.at(-1).message,/JSON-serializable/);
 });
 
 test('SDK rejects invalid event names and bounds event details',()=>{
