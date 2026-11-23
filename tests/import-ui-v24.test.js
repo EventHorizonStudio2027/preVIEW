@@ -11,3 +11,8 @@ test('invalid HTML selections clear the input to allow selecting the same correc
  assert.match(app,/Choose an HTML file under 20 MB\.\x27\);e\.target\.value=\x27\x27;return/);
  assert.match(app,/Import blocked: unsafe asset references detected\.\x27\);e\.target\.value=\x27\x27;return/);
 });
+
+test('checkpoint message handler rejects unexpected SDK replies instead of hanging',()=>{
+ assert.match(app,/Unexpected checkpoint response:/);
+ assert.match(app,/else request\.reject\(Error\('Unexpected checkpoint response:/);
+});
