@@ -85,6 +85,18 @@ try {
   await page.getByRole('heading', { name: 'Prepare your preview.' }).waitFor();
   await page.goBack({waitUntil:'domcontentloaded'});
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
+  // User-facing import -> review -> downloaded playable HTML (not just the builder function).
+  await page.locator('#gameFile').setInputFiles({name:'tiny-game.html',mimeType:'text/html',buffer:Buffer.from('<!doctype html><html><body><button id="realGame" onclick="this.textContent=\\'Played\\'">Play</button></body></html>')});
+  await page.waitForFunction(() => document.querySelector('#filename')?.textContent?.includes('tiny-game.html'));
+  await page.locator('[data-step="review"]').click();
+  await page.locator('#ctaUrl').fill('https://example.com/full');
+  await page.locator('#exportPlayable:not([disabled])').waitFor();
+  const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#exportPlayable').click()]);
+  if(!download.suggestedFilename().endsWith('-playable.html'))throw new Error('Playable download filename is incorrect');
+  const downloadPath=await download.path();
+  const downloaded=await readFile(downloadPath,'utf8');
+  if(!downloaded.includes('id="game"')||!downloaded.includes('https://example.com/full'))throw new Error('UI downloaded invalid playable HTML');
+  await page.locator('[data-view="editor"]').first().click();
   // Exercise the actual exported artifact, including Unicode, sandboxed interaction and CTA.
   const exported = buildPlayableHtml({name:'Arcade 🎮',ctaText:'Play the full game',ctaUrl:'https://example.com/full'},
     '<!doctype html><html><body><button id="counter" onclick="this.textContent=\'Clicked ✓\'">Click me 🎮</button></body></html>');
