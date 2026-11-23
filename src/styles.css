@@ -240,3 +240,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.5 final polish: subtle highlight on active imported filename */
 #filename{border-radius:5px;text-shadow:0 1px 0 #00000018}
 @media(prefers-reduced-motion:no-preference){#filename{transition:color .18s ease,text-shadow .18s ease}}
+
+/* v6.6 connection feedback: readable even when the game does not support checkpoints */
+#sdkStatus{overflow-wrap:anywhere;line-height:1.55;max-width:100%}
+@media(max-width:620px){#sdkStatus{padding-block:3px}}
