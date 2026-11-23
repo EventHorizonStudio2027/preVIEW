@@ -220,3 +220,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.3: keep SDK connection feedback readable at mobile widths */
 #sdkStatus{max-width:100%;overflow-wrap:anywhere;line-height:1.5}
 @media(max-width:620px){#sdkStatus{font-size:13px}}
+
+/* v6.3 final design pass: refined SDK connection-status typography */
+#sdkStatus{font-variant-numeric:tabular-nums;letter-spacing:.012em;text-wrap:pretty}
+@media(prefers-reduced-motion:no-preference){#sdkStatus{transition:color .18s ease}}
