@@ -251,3 +251,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.7 import usability: keep diagnostic messages readable in compact layouts */
 #importDiagnostics{overflow-wrap:anywhere;max-width:100%;line-height:1.6}
 @media(max-width:620px){#importDiagnostics{padding-block:6px}}
+
+/* v6.7 final polish: restrained import diagnostic surface and sharper typography */
+#importDiagnostics{border-radius:7px;letter-spacing:.005em;background-image:linear-gradient(100deg,#9c85d30b,transparent 78%)}
