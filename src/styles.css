@@ -149,3 +149,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.3 final visual polish: consistent lavender focus and tactile review affordances */
 #exportPlayable:focus-visible,#exportManifest:focus-visible,#exportProject:focus-visible{outline:3px solid #9d80f6;outline-offset:3px;box-shadow:0 0 0 6px #9d80f626}
 @media(prefers-reduced-motion:no-preference){#exportPlayable:not(:disabled):hover,#exportManifest:not(:disabled):hover,#exportProject:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 7px 18px #4b368b1c}}
+
+/* v5.4 checkpoint review: clearer status hierarchy without consuming more space */
+#sdkStatus,#sessionStatus{font-variant-numeric:tabular-nums;line-height:1.5}
+#checkpointTarget{max-width:100%;min-height:42px}
+@media(max-width:620px){#captureCheckpoint{min-height:46px;width:100%;white-space:normal}}
