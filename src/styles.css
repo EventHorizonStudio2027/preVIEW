@@ -212,3 +212,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.2 review clarity: guided status is legible and stable while the game restores */
 #walkthroughStatus{min-height:1.6em;overflow-wrap:anywhere}
 @media(max-width:620px){#walkthroughStatus{font-size:13px;line-height:1.6}}
+
+/* v6.2 final visual polish: softly illuminate the checkpoint status on keyboard navigation */
+#walkthroughStatus{border-radius:8px;padding:5px 8px;background:linear-gradient(90deg,#9380ce0d,transparent 75%)}
+@media(prefers-reduced-motion:no-preference){#walkthroughStatus{transition:background-color .18s ease}}
