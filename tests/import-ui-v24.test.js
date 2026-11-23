@@ -40,3 +40,10 @@ test('empty HTML uploads are rejected without discarding the current game',()=>{
  assert.match(app,/file\.size===0\|\|file\.size>20\*1024\*1024/);
  assert.match(app,/Choose a non-empty HTML file under 20 MB/);
 });
+
+test('checkpoint capture is locked to the original game, project, and selected moment',()=>{
+ assert.match(app,/if\(checkpointCapturing\)return/);
+ assert.match(app,/const token=sessionToken,project=state,target=\$\('checkpointTarget'\)\.value/);
+ assert.match(app,/if\(token!==sessionToken\|\|project!==state\)return/);
+ assert.match(app,/\$\('captureCheckpoint'\)\.disabled=!sdkReady/);
+});
