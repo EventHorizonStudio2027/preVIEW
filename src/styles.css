@@ -163,3 +163,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 #exportPlayable:not(:disabled){box-shadow:inset 0 1px 0 #ffffff38,0 4px 12px #6441b526}
 #exportPlayable:focus-visible{outline:3px solid #7752d7;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){#exportPlayable,#captureCheckpoint{transition:none!important;transform:none!important}}
+
+/* v5.6 mobile workspace: keep embedded content and review controls inside viewport */
+@media(max-width:620px){.main,.page,.panel,.editor-main,.editor-grid,.publish-grid,.heading{min-width:0;max-width:100%}.page{padding-left:16px;padding-right:16px}.panel{overflow-wrap:anywhere}.actions{flex-wrap:wrap}.actions>*{max-width:100%}#gameFrame{max-width:100%}}
