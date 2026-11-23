@@ -236,3 +236,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.5 import and backup usability: prevent filename overflow in compact upload rows */
 #filename,#importDiagnostics{overflow-wrap:anywhere;word-break:normal}
 @media(max-width:620px){#filename{max-width:100%;font-size:13px}}
+
+/* v6.5 final polish: subtle highlight on active imported filename */
+#filename{border-radius:5px;text-shadow:0 1px 0 #00000018}
+@media(prefers-reduced-motion:no-preference){#filename{transition:color .18s ease,text-shadow .18s ease}}
