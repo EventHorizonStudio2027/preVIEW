@@ -208,3 +208,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.1 final visual polish: crisp active keyboard ring and subtle status typography */
 #walkthroughStatus{font-variant-numeric:tabular-nums;letter-spacing:.01em}
 #walkthroughEnd:focus-visible{outline:3px solid #c1aaff;outline-offset:3px}
+
+/* v6.2 review clarity: guided status is legible and stable while the game restores */
+#walkthroughStatus{min-height:1.6em;overflow-wrap:anywhere}
+@media(max-width:620px){#walkthroughStatus{font-size:13px;line-height:1.6}}
