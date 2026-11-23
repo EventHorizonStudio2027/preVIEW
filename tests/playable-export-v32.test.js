@@ -15,3 +15,9 @@ test('app keeps source in memory only while game is loaded',()=>{const s=readFil
 test('rejects unsafe local traversal and script asset schemes on export',()=>{assert.throws(()=>buildPlayableHtml(project,'<img src="../secret.png">'),/unsafe asset/);assert.throws(()=>buildPlayableHtml(project,'<script src="javascript:alert(1)"></script>'),/unsafe asset/)});
 test('preserves Unicode source through base64 without inserting executable outer markup',()=>{const source='<p>你好 🎮 café</p>';const output=buildPlayableHtml(project,source);const encoded=output.match(/const encoded='([^']+)'/)[1];assert.equal(new TextDecoder().decode(Uint8Array.from(atob(encoded),c=>c.charCodeAt(0))),source)});
 test('rejects oversized imported HTML before encoding',()=>assert.throws(()=>buildPlayableHtml(project,'x'.repeat(20*1024*1024+1)),/20 MB/));
+
+test('refuses to label unresolved local assets as a standalone playable build',()=>{
+ assert.throws(()=>buildPlayableHtml(project,'<img src="images/hero.png">'),/unresolved local assets/);
+ assert.throws(()=>buildPlayableHtml(project,'<link rel="stylesheet" href="styles/game.css">'),/unresolved local assets/);
+ assert.doesNotThrow(()=>buildPlayableHtml(project,'<img src="data:image/png;base64,aGVsbG8=">'));
+});
