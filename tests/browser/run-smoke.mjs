@@ -101,6 +101,14 @@ try {
   await downloadedPage.frameLocator('#game').locator('#realGame').click();
   if(await downloadedPage.frameLocator('#game').locator('#realGame').textContent()!=='Played')throw new Error('Downloaded playable artifact did not run the imported game');
   await downloadedPage.close();
+  // Missing local assets must block export until the creator supplies them.
+  await page.locator('[data-view="editor"]').first().click();
+  await page.locator('#gameFile').setInputFiles({name:'asset-game.html',mimeType:'text/html',buffer:Buffer.from('<!doctype html><html><body><img src="missing.png"></body></html>')});
+  await page.locator('[data-step="review"]').click();
+  await page.locator('#exportPlayable:disabled').waitFor();
+  const tinyPng=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
+  await page.locator('#assetFiles').setInputFiles({name:'missing.png',mimeType:'image/png',buffer:tinyPng});
+  await page.locator('#exportPlayable:not([disabled])').waitFor();
   await page.locator('[data-view="editor"]').first().click();
   // Exercise the actual exported artifact, including Unicode, sandboxed interaction and CTA.
   const exported = buildPlayableHtml({name:'Arcade 🎮',ctaText:'Play the full game',ctaUrl:'https://example.com/full'},
