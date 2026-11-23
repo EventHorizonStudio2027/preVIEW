@@ -13,6 +13,7 @@ export function buildPlayableHtml(project,sourceHtml){
  if(typeof sourceHtml!=='string'||!sourceHtml.trim())throw Error('Import a game HTML file before exporting a playable preview.');
  const inspection=inspectHtml(sourceHtml,'game.html');
  if(inspection.counts.unsafe)throw Error('Cannot export a game with unsafe asset references.');
+ if(inspection.counts.local)throw Error('Cannot export a standalone playable file with unresolved local assets. Add and embed the referenced files first.');
  const destination=validateDestination(project?.ctaUrl||'');if(!destination)throw Error('Enter a valid HTTP or HTTPS destination.');
  const name=escapeHtml((project?.name||'Untitled preview').slice(0,80));
  const label=escapeHtml((project?.ctaText||'Play the full game').slice(0,70));
