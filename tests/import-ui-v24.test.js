@@ -16,3 +16,10 @@ test('checkpoint message handler rejects unexpected SDK replies instead of hangi
  assert.match(app,/Unexpected checkpoint response:/);
  assert.match(app,/else request\.reject\(Error\('Unexpected checkpoint response:/);
 });
+
+test('new game imports and demo selection invalidate stale asynchronous file reads',()=>{
+ assert.match(app,/let importGeneration=0/);
+ assert.match(app,/const generation=\+\+importGeneration/);
+ assert.match(app,/html=await file\.text\(\);if\(generation!==importGeneration\)return/);
+ assert.match(app,/\$\('loadDemo'\)\.onclick=\(\)=>\{importGeneration\+\+;clearGame\(\)/);
+});
