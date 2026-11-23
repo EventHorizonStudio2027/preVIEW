@@ -254,3 +254,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 
 /* v6.7 final polish: restrained import diagnostic surface and sharper typography */
 #importDiagnostics{border-radius:7px;letter-spacing:.005em;background-image:linear-gradient(100deg,#9c85d30b,transparent 78%)}
+
+/* v6.8: checkpoint capture button communicates busy state clearly */
+#captureCheckpoint:disabled{cursor:not-allowed;opacity:.62;filter:saturate(.72)}
+@media(prefers-reduced-motion:no-preference){#captureCheckpoint{transition:opacity .16s ease,filter .16s ease}}
