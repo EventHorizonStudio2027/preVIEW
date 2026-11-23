@@ -21,3 +21,8 @@ test('refuses to label unresolved local assets as a standalone playable build',(
  assert.throws(()=>buildPlayableHtml(project,'<link rel="stylesheet" href="styles/game.css">'),/unresolved local assets/);
  assert.doesNotThrow(()=>buildPlayableHtml(project,'<img src="data:image/png;base64,aGVsbG8=">'));
 });
+
+test('download handoff keeps object URLs alive long enough for browser save dialogs',()=>{
+ const app=readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+ assert.equal((app.match(/setTimeout\(\(\)=>URL\.revokeObjectURL\(u\),60000\)/g)||[]).length,2);
+});
