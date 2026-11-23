@@ -12,16 +12,16 @@ function route(name){for(const v of document.querySelectorAll('.view'))v.classLi
 function updateWalkthrough(){
  const status=walkthroughReadiness(state),active=walkthroughIndex>=0;
  $('walkthroughStatus').textContent=active?`Step ${walkthroughIndex+1} of ${status.total}: ${state.moments[walkthroughIndex]?.title||''}`:status.ready?`${status.total} checkpoint moments ready for guided review`:`${status.total} moments · ${status.missing.length} missing checkpoints`;
- $('walkthroughStart').disabled=!sdkReady||!status.ready;
- $('walkthroughPrev').disabled=!sdkReady||!active||walkthroughIndex<=0;
- $('walkthroughNext').disabled=!sdkReady||!active||walkthroughIndex>=status.total-1;
- $('walkthroughEnd').disabled=!active;
+ $('walkthroughStart').disabled=walkthroughRestoring||!sdkReady||!status.ready;
+ $('walkthroughPrev').disabled=walkthroughRestoring||!sdkReady||!active||walkthroughIndex<=0;
+ $('walkthroughNext').disabled=walkthroughRestoring||!sdkReady||!active||walkthroughIndex>=status.total-1;
+ $('walkthroughEnd').disabled=walkthroughRestoring||!active;
 }
 let walkthroughRestoring=false;
 async function goWalkthrough(index){
  if(walkthroughRestoring)return;
  walkthroughRestoring=true;
- for(const id of ['walkthroughStart','walkthroughPrev','walkthroughNext'])$(id).disabled=true;
+ updateWalkthrough();
  try{const step=walkthroughStep(state,index);await requestSDK('restore',{state:step.state});walkthroughIndex=index;notify(`Restored ${step.title}. Play the moment, then advance when ready.`)}catch(e){notify(e.message)}finally{walkthroughRestoring=false;updateWalkthrough()}
 }
 function stopPlayback(message){
