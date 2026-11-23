@@ -141,3 +141,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.2 final visual touch: distinct but calm export progress state */
 #exportPlayable:disabled{filter:saturate(.82);box-shadow:inset 0 1px 0 #ffffff40}
 @media(prefers-reduced-motion:no-preference){#exportPlayable{transition:filter .18s ease,box-shadow .18s ease}}
+
+/* v5.3: make export actions easier to target and scan on small screens */
+#exportPlayable,#exportManifest,#exportProject{min-height:46px;line-height:1.35}
+@media(max-width:620px){#exportPlayable,#exportManifest,#exportProject{width:100%;max-width:100%;justify-content:center}}
