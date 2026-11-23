@@ -258,3 +258,6 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v6.8: checkpoint capture button communicates busy state clearly */
 #captureCheckpoint:disabled{cursor:not-allowed;opacity:.62;filter:saturate(.72)}
 @media(prefers-reduced-motion:no-preference){#captureCheckpoint{transition:opacity .16s ease,filter .16s ease}}
+
+/* v6.8 final visual polish: calm violet focus treatment for checkpoint capture */
+#captureCheckpoint:focus-visible{outline:2px solid #c3a9ff;outline-offset:3px;box-shadow:0 0 0 5px #a78bfa20}
