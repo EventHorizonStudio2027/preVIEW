@@ -193,3 +193,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #A994FF;outline-offset:3p
 /* v5.9 final visual polish: upload labels gain a clear focused edge without flashing on pointer clicks */
 .file-button:has(input:focus-visible){outline:3px solid #bda9ff;outline-offset:3px;background:linear-gradient(155deg,#3a3558,#292b42);box-shadow:0 0 0 6px #bda9ff22,inset 0 1px 0 #ffffff20}
 @media(prefers-reduced-motion:reduce){.file-button{transition:none!important}}
+
+/* v6.0 guided review UX: loading controls stay aligned and readable while restore is in flight */
+#walkthroughStart,#walkthroughPrev,#walkthroughNext{min-height:42px;line-height:1.35}
+@media(max-width:620px){#walkthroughStart,#walkthroughPrev,#walkthroughNext{white-space:normal;flex:1 1 auto}}
