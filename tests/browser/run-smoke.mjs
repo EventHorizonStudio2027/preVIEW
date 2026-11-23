@@ -136,6 +136,15 @@ try {
   await modulePage.setContent(buildPlayableHtml({name:'Module graph',ctaText:'Play',ctaUrl:'https://example.com'},moduleBundle.html),{waitUntil:'domcontentloaded'});
   await modulePage.frameLocator('#game').locator('body[data-answer="42"]').waitFor({state:'attached',timeout:10000});
   await modulePage.close();
+  // Narrow touch viewport: primary workflow must remain operable without horizontal overflow.
+  const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+  await mobile.goto(origin+'/index.html',{waitUntil:'domcontentloaded'});
+  await mobile.locator('[data-step="import"]').click();
+  await mobile.locator('#loadDemo').click();
+  await mobile.waitForFunction(()=>document.querySelector('#sessionStatus')?.textContent==='Demo loaded');
+  const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  if(overflow>4)throw new Error('Mobile workspace overflows viewport by '+overflow+'px');
+  await mobile.close();
   if (failedResponses.length) throw new Error(`Failed asset requests: ${failedResponses.join('; ')}`);
   if (errors.length) throw new Error(`Browser JavaScript errors: ${errors.join('; ')}`);
   console.log('Browser smoke: PASS (workspace, demo, exported playable game, Unicode and CTA)');
