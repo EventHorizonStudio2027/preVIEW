@@ -40,7 +40,21 @@ try {
   if (fixture !== 'PASS') throw new Error(`Model fixture failed: ${fixture}`);
 
   await page.goto(origin + '/index.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-  await page.getByRole('heading', { name: 'Make your game playable in minutes.' }).waitFor();
+  await page.getByRole('heading', { name: /Try the app.*Before you commit/i }).waitFor();
+  await page.locator('#appQuery').fill('task planner');
+  await page.locator('#appRequest button').click();
+  await page.locator('#sampleInput').fill('Test consumer task');
+  await page.locator('#sampleForm button').click();
+  const task=page.locator('#sampleTasks label').filter({hasText:'Test consumer task'});
+  await task.locator('input').check();
+  if(!(await task.locator('input').isChecked()))throw new Error('Consumer task completion failed');
+  await page.locator('#sampleRestart').click();
+  if(await task.count())throw new Error('Consumer restart retained old task');
+  await page.locator('a[data-view="overview"]').click();
+  await page.locator('#appQuery').fill('Unavailable app');
+  await page.locator('#appRequest button').click();
+  await page.locator('#requestResult').filter({hasText:'No published preview'}).waitFor();
+  await page.locator('a[data-view="editor"]').click();
   await page.locator('[data-step="import"]').waitFor();
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.locator('[data-step="import"]').waitFor();
@@ -55,7 +69,7 @@ try {
   if (!importLabel?.includes('Reimport')) throw new Error('Missing game source did not prompt reimport');
 
   if (await page.locator('[data-step="import"]').getAttribute('class') === 'completed') throw new Error('Fresh project should not mark import completed');
-  await page.getByRole('link', { name: /Preview editor/ }).click();
+  await page.getByRole('link', { name: /Creator studio/ }).click();
   await page.getByRole('heading', { name: 'Shape the experience.' }).waitFor();
   await page.locator('#loadDemo').click();
   await page.waitForFunction(() => document.querySelector('#gameFrame')?.getAttribute('src') === 'examples/checkpoint-demo.html');
@@ -151,6 +165,7 @@ try {
   // Narrow touch viewport: primary workflow must remain operable without horizontal overflow.
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   await mobile.goto(origin+'/index.html',{waitUntil:'domcontentloaded'});
+  await mobile.locator('a[data-view="editor"]').click();
   await mobile.locator('[data-step="import"]').click();
   // Import must be reachable without a pointer, including hidden native file inputs.
   const keyboardFile=mobile.locator('#gameFile');
