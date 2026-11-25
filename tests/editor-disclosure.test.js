@@ -8,6 +8,6 @@ test('three advanced tools are hidden until expanded',()=>assert.equal((html.mat
 test('each advanced disclosure has a visible summary',()=>assert.equal((html.match(/<summary>/g)||[]).length,3));
 test('advanced tool disclosures are structurally balanced',()=>assert.equal((html.match(/<\/details>/g)||[]).length,3));
 test('advanced disclosure keyboard focus is visible',()=>assert.match(css,/\.advanced-tool>summary:focus-visible/));
-test('undo is cleared when changing the loaded game',()=>assert.match(js,/function clearGame\(\)\{deletedMoment=null;\$\('undoDelete'\)\.hidden=true/));
+test('undo is cleared when changing the loaded game',()=>assert.match(js,/function clearGame\(\)\{importGeneration\+\+;deletedMoment=null;\$\('undoDelete'\)\.hidden=true/));
 test('export readiness describes manifest, not playable game',()=>assert.match(js,/Ready to export a planning manifest/));
 test('undo button has a descriptive accessible label',()=>assert.match(html,/aria-label="Undo last removed moment"/));
